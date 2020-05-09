@@ -47,7 +47,7 @@ can also serve as an example on how to create a reusable
 [Razor Class Library](https://docs.microsoft.com/en-us/aspnet/core/blazor/class-libraries?view=aspnetcore-3.1&tabs=visual-studio) 
 (RCL) that contain 
 [static resources](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-3.1)
-and consume it from your applications in .NET Core 3.1. There is 
+and how to consume it from your applications in .NET Core 3.1. There is 
 [currently](https://stackoverflow.com/questions/59431923/cant-reference-static-files-from-rcl) 
 [some](https://stackoverflow.com/questions/51610513/can-razor-class-library-pack-static-files-js-css-etc-too?rq=1) 
 [confusion](https://stackoverflow.com/questions/60040793/404-with-static-content-in-razor-class-library-rcl)
