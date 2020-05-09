@@ -17,3 +17,7 @@ that had been specified in your view without cluttering your controller code wit
 about the view.
 
 In addition, the library can also handle requests sent by either GETs or POSTs.
+
+-----
+
+For more information on how to use it and for sample applications that can help you get started, check the [project website](https://dynamic-vml.github.io/).
