@@ -1,0 +1,84 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [ "*.csproj" ],
+          "cwd": "../src",
+          "exclude": [
+            "**/obj/**",
+            "**/bin/**",
+            "_site/**"
+          ]
+        }
+      ],
+      "dest": "obj/api"
+    }
+  ],
+  "build": {
+    "globalMetadata": {
+      "_appTitle": "Dynamic View Model (lists)",
+      "_appFooter": "Copyright &copy; 2020 C&eacute;sar Roberto de Souza - All files are available under the <a href=\"https://opensource.org/licenses/MIT\">MIT license</a> except the logo, which comes from <a href=\"https://fontawesome.com/\">FontAwesome.",
+      "_enableSearch": true,
+      "_appLogoPath": "images/stream-solid-white.svg",
+      "_appFaviconPath": "images/stream-solid.svg",
+      "_enableNewTab": true,
+      "_disableNavbar": false,
+      "_disableBreadcrumb": false,
+      "_disableToc": false,
+      "_gitContribute": {
+        "repo": "https://github.com/org/repo",
+        "branch": "dev",
+        "apiSpecFolder": "docs-ref-overwrite"
+      }
+    },
+    "xrefService": [ "https://xref.docs.microsoft.com/query?uid={uid}" ],
+    "content": [
+      {
+        "files": [
+          "api/**.yml"
+        ],
+        "cwd": "obj"
+      },
+      {
+        "files": [
+          "api/*.md",
+          "articles/**.md",
+          "toc.yml",
+          "*.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
+        ]
+      }
+    ],
+    "overwrite": [
+      {
+        "files": [
+          "apidoc/**.md"
+        ],
+        "exclude": [
+          "obj/**",
+          "_site/**"
+        ]
+      }
+    ],
+    "dest": "_site",
+    "template": [
+      "statictoc",
+      "templates/dmvl"
+    ]
+  }
+}
