@@ -1,4 +1,6 @@
-<h1><i class="fas fa-stream logo-color"></i> Dynamic <strong class="logo-color">View Model</strong> Lists</h1>
+<h1 class="article-title"><i class="fas fa-stream logo-color"></i> Dynamic <strong class="logo-color">View Model</strong> Lists</h1>
+
+-------
 
 The *Dynamic View Model Lists* library provides a templating engine to render dynamic item lists in ASP.NET. 
 A dynamic list is a list inside an HTML form where the user can add new items to a list after the page 
@@ -17,6 +19,7 @@ that had been specified in your view without cluttering your controller code wit
 about the view.
 
 Lastly, the library can handle requests sent by either GET or POST.
+
 
 
 
@@ -100,7 +103,7 @@ The library provides a templating mechanism and an *options* mechanism so you ca
 customize your lists without having to perform too many changes to your existing 
 view models.
 
-### Using templates to customize your list rendering
+### Using templates to customize list rendering
 
 The library assumes that you already have defined reusable views for the many multiple view models 
 you might have in your project. For example, a common approach for reuse would be to define a common

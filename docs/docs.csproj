@@ -71,21 +71,25 @@
     <Content Include=".gitignore" />
     <Content Include="api\.gitignore" />
     <Content Include="images\dvml.png" />
-    <Content Include="images\stream-solid-black-border.png" />
-    <Content Include="images\stream-solid-black-border.svg" />
-    <Content Include="images\stream-solid-white-border.svg" />
-    <Content Include="images\stream-solid-white.svg" />
-    <Content Include="images\stream-solid.svg" />
+    <Content Include="images\fas\fa-stream\stream-solid-black-border.png" />
+    <Content Include="images\fas\fa-stream\stream-solid-black-border.svg" />
+    <Content Include="images\fas\fa-stream\stream-solid-gray.svg" />
+    <Content Include="images\fas\fa-stream\stream-solid-white-border.svg" />
+    <Content Include="images\fas\fa-stream\stream-solid-white.svg" />
+    <Content Include="images\fas\fa-stream\stream-solid.svg" />
+    <Content Include="images\fas\LICENSE.txt" />
     <Content Include="images\templates.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="templates\dmvl\fonts\fa-brands-400.svg" />
     <Content Include="templates\dmvl\fonts\fa-regular-400.svg" />
     <Content Include="templates\dmvl\fonts\fa-solid-900.svg" />
+    <Content Include="templates\dmvl\fonts\LICENSE.txt" />
     <Content Include="templates\dmvl\styles\brands.css" />
     <Content Include="templates\dmvl\styles\brands.min.css" />
     <Content Include="templates\dmvl\styles\fontawesome.css" />
     <Content Include="templates\dmvl\styles\fontawesome.min.css" />
+    <Content Include="templates\dmvl\styles\LICENSE.txt" />
     <Content Include="templates\dmvl\styles\main.css" />
     <Content Include="templates\dmvl\styles\regular.css" />
     <Content Include="templates\dmvl\styles\regular.min.css" />

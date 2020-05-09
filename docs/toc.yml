@@ -1,7 +1,9 @@
-- name: Getting started
+- name: Introduction
   href: index.md
-- name: Class reference
+- name: API Documentation
   topicUid: DynamicVML
-- name: Sample applications
+- name: Sample Apps
   href: samples.md
+- name: GitHub
+  href: https://github.com/cesarsouza/dvml/
 

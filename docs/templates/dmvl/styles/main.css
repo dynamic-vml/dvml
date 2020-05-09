@@ -38,11 +38,43 @@
       padding: 5pt;
       width: 35pt;
       height: 35pt;
-      fill: white;
+      fill: #FEFEFE;
       margin-top: 2pt;
       margin-left: -8pt;
   }
 
-  .logo-color {
-      color: darkred
-  }
+.logo-color {
+    margin-top: 1px;
+    color: #337AB7
+}
+
+.article-title {
+    padding-top: 21px;
+    margin-top: 0px !important;
+    margin-bottom: 10px;
+    font-size: 36px !important;
+}
+
+.article h1 {
+    margin-top: 45px;
+    margin-bottom: 25px;
+    font-size: 28px;
+}
+
+.article h2 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 30px;
+}
+
+.article h3 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 21px;
+}
+
+.article h4 {
+    margin-top: 30px;
+    margin-bottom: 16px;
+    font-size: 18px;
+}
