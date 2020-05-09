@@ -1,0 +1,75 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <RootNamespace>DynamicVML</RootNamespace>
+    <StartupObject></StartupObject>
+    <OutputType>Library</OutputType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+    <IsPackable>true</IsPackable>
+    <Authors>César Roberto de Souza</Authors>
+    <Company />
+    <Product>Dynamic ViewModel Lists</Product>
+    <Description>This library provides a special type of List&lt;T&gt; that can be used to create dynamic lists in ASP.NET MVC views, i.e. lists where the user can click "add new item" and the server renders a new list item using Ajax.</Description>
+    <Copyright>2020 (c) César Roberto de Souza</Copyright>
+    <PackageTags>aspnetcore library ajax viewmodel lists dynamiclists</PackageTags>
+    <PackageProjectUrl>https://github.com/cesarsouza/dvml/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cesarsouza/dvml.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>dvml.png</PackageIcon>
+    <AssemblyName>DynamicVML</AssemblyName>
+    <Version>1.0.35</Version>
+
+    <!-- Strong name the assembly-->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Properties\dvml.pfx</AssemblyOriginatorKeyFile>
+
+    <!-- Razor <-> MVC options -->
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <GenerateMvcApplicationPartsAssemblyAttributes>true</GenerateMvcApplicationPartsAssemblyAttributes>
+
+    <!--Razor specific options-->
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <IncludeRazorContentInPack>false</IncludeRazorContentInPack>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <!--<EmbedRazorGenerateSources>true</EmbedRazorGenerateSources>-->
+    <EnableDefaultRazorGenerateItems>true</EnableDefaultRazorGenerateItems>
+  </PropertyGroup>
+
+
+  <!--An RCL that's used to build Razor views or pages (.cshtml files) minimally requires 
+      targeting netcoreapp3.0 or later and has a FrameworkReference to the Microsoft.AspNetCore.App
+      metapackage in its project file.-->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <!-- This package minifies dvml.js to dvml.min.js during the build -->
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.447" />
+    <!-- Those references are required to embed the javascript files into the assembly -->
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
+  </ItemGroup>
+
+  <!--Icon file for Nuget-->
+  <ItemGroup>
+    <None Include="Properties\dvml.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <!-- From https://stackoverflow.com/a/59574845/262032 -->
+  <PropertyGroup>
+    <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/</StaticWebAssetBasePath>
+  </PropertyGroup>
+
+
+</Project>

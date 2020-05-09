@@ -1,0 +1,8 @@
+[
+  {
+    "outputFileName": "wwwroot/lib/dynamic-viewmodel-lists/dvml.min.js",
+    "inputFiles": [
+      "wwwroot/lib/dynamic-viewmodel-lists/dvml.js"
+    ]
+  }
+]

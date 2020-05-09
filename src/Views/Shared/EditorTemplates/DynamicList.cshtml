@@ -1,0 +1,18 @@
+﻿@using DynamicVML
+@using DynamicVML.Extensions
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IDynamicList
+
+@foreach (string i in Model.Keys)
+{
+    Model.Index = i;
+
+    <div id="@i" name="dynamic-list-item">
+        <input type="hidden" asp-for="Index" />
+        <input type="hidden" asp-for="ContainerId" />
+        <input type="hidden" asp-for="@Model[i].Index" />
+
+        @Html.RenderDynamicItemContainerEditor(i)
+
+    </div>
+}

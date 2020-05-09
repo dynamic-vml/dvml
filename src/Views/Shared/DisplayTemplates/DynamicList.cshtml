@@ -1,0 +1,9 @@
+﻿@using DynamicVML
+@using DynamicVML.Extensions
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IDynamicList
+
+@foreach (string i in Model.Keys)
+{
+    @Html.RenderDynamicItemContainerDisplay(i)
+}
