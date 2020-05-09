@@ -2,7 +2,7 @@
 
 -------
 
-The *Dynamic View Model Lists* library provides a templating engine to render dynamic item lists in ASP.NET. 
+The *Dynamic View Model Lists* library (DVML) provides a templating engine to render dynamic item lists in ASP.NET. 
 A dynamic list is a list inside an HTML form where the user can add new items to a list after the page 
 has been rendered.
 In ASP.NET, the default model binder makes certain assumptions to determine the name of the fields in the
@@ -18,22 +18,26 @@ The library can also make your controllers include [additionalViewData](https://
 that had been specified in your view without cluttering your controller code with too many details
 about the view.
 
-Lastly, the library can handle requests sent by either GET or POST.
+In addition, the library can also handle requests sent by either GETs or POSTs.
 
 
 
 
 # Getting started
 
-To get started, start by adding a reference to the DynamicVM.Lists NuGet package in your project. Then:
+To get started, start by adding a reference to the [DynamicVML NuGet package](https://www.nuget.org/packages/DynamicVML/)
+in your project:
 
+<span class="install-command">dotnet add package DynamicVML</span>
 
-### 1. JavaScript
-Add a reference to the `~/lib/dynamic-viewmodel-list/dvml.js` script included in the NuGet package
-to your view, e.g., by adding it to the `Scripts` section usually located at the bottom of your 
-`Create`, `Edit`, `Details`, and/or `Delete.cshtml` view files:
+After adding the package, you just have to perform four steps to get it running:
 
-```cs
+### 1. Add script references
+Add a reference to `~/lib/dynamic-viewmodel-list/dvml.js` to your view, e.g., either by adding
+it to your `_Layout.cshtml` file or to the `Scripts` section usually located at the bottom of 
+your `Create`, `Edit`, `Details`,  and/or `Delete.cshtml` view files:
+
+```html
 @section Scripts {
     <!-- Load JS code for the Dynamic ViewModel Lists above -->
     <script src="~/lib/dynamic-viewmodel-list/dvml.js"></script>
@@ -41,16 +45,15 @@ to your view, e.g., by adding it to the `Scripts` section usually located at the
 ```
 
 >[!NOTE]
-Note: The include above should work even though you will notice that this file will not be physically 
+The include above should work even though you will notice that this file will not be physically 
 present in your `wwwroot` folder. That's because the library is implemented as a [.NET Core App 3.1 Razor
 Class Library (RCL)](https://docs.microsoft.com/en-us/aspnet/core/razor-pages/ui-class?view=aspnetcore-3.1&tabs=visual-studio#create-an-rcl-with-static-assets)
-and the .js is embedded within the library .DLLs. The server will take care of loading it from the correct
-source when needed.
+and the .js is embedded within the library .DLLs. 
 
 
-### 2. ViewModels
-Update your view models to use `DynamicList<T>` instead of `List<T>` for any collections
-you want to support client-side dynamic insertion:
+### 2. Replace relevant usages of List&lt;T&gt; with [DynamicList&lt;T&gt;](xref:DynamicVML.DynamicList%601)
+Update your view models to use `DynamicList<T>` instead of `List<T>` for any
+collections you want to support client-side dynamic insertion:
 
 ```cs
 public class AuthorViewModel
@@ -67,7 +70,7 @@ public class AuthorViewModel
 ```
 
 
-### 3. Controller
+### 3. Add actions that create new items to your controllers
 Add an action to your controller to create a new view model item upon request:
 
 ```cs
@@ -83,7 +86,7 @@ public IActionResult AddBook(AddNewDynamicItem parameters)
 ```
 
 
-### 4. Views
+### 4. Use ListEditorFor() and DisplayListFor() in your views
 Update your view to use a the extension method `Html.ListEditorFor()` method that takes
 the name of the method above and a text to be rendered as the *"add new item"* button as an 
 argument:
@@ -148,7 +151,7 @@ The meaning of each region is shown in the figure below:
 
 Note that each of those regions are completely oblivious of each other and can be replaced at will,
 without having to create different views for each configuration. All you have to do is specify templates
-for them when calling `EditorFor` in your view. If you do not specify the template for some region,
+for them when calling `ListEditorFor()` in your view. If you do not specify the template for some region,
 the library will use default ones that can be obtained either from the library itself, or by searching
 for .cshtml files in your application that have the same name as the default templates.
 
@@ -231,11 +234,11 @@ public class AuthorViewModel
 >[!NOTE]
 While this is possible, this is not exactly recommended as one could argue that specifying view 
 parameters in your view models may add unnecessary coupling between your code and the presentation
-layer. However, if you **really** want to do this for some reason, the library will let you do so.
+layer. However, if you **really** want to do this, the library will let you do so.
 
 
 
-### Passing custom additionalViewData to dynamic list items
+### Passing custom *additionalViewData* to dynamic list items
 
 Maybe in your project you might have the need to pass different parameters to your views
 by passing anonymous objects to the `additionalViewData` parameter of `ListEditorFor()`. However,
@@ -258,7 +261,7 @@ original behavior of your views working.
 ```
 
 >[!Note]
-Passing additional view data to the client requires specifying `method: RequestNewItemMethod.Post`
+Passing additional view data to the client requires also specifying `method: RequestNewItemMethod.Post`
 since the additional data may be too long to be included in a GET query string.
 
 >[!WARNING]
@@ -266,7 +269,7 @@ While the library supports this scenario, it may not be advisable to actually ma
 since there may be other cleaner ways to pass user data to your views, e.g. with proper properties
 in your view models. A malicious user could also tamper with the stored data and let the form
 submit altered data to your server. However, again, if you **really** need this functionality and
-understand the risks, the library still supports this scenario.
+understand the risks, the library will also let you do so.
 
 
 

@@ -78,3 +78,29 @@
     margin-bottom: 16px;
     font-size: 18px;
 }
+
+
+
+.install-command {
+    resize: none;
+    /*top right bottom left*/
+    margin: 0px 80px 10px 30px;
+    padding: 10px 10px 10px 0px;
+    border: none;
+    outline: none;
+    background-color: rgb(37, 37, 38);
+    color: rgb(255, 255, 255);
+    font-family: Monospace;
+    /*font-family: 'Fira Mono';*/
+    /*width: calc(100% - 20px);*/
+    overflow: hidden;
+    line-height: 30pt;
+}
+
+.install-command:before {
+    margin-left: 10px;
+    margin-right: 10px;
+    content: "PM>";
+    color: rgb(200, 200, 200);
+    font-weight: bold;
+}
