@@ -23,11 +23,11 @@
     <Copyright>2020 (c) César Roberto de Souza</Copyright>
     <PackageTags>aspnetcore library ajax viewmodel lists dynamiclists</PackageTags>
     <PackageProjectUrl>https://github.com/cesarsouza/dvml/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/cesarsouza/dvml.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dynamic-mvl/dvml.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageIcon>dvml.png</PackageIcon>
     <AssemblyName>DynamicVML</AssemblyName>
-    <Version>1.0.35</Version>
+    <Version>1.0.0</Version>
 
     <!-- Strong name the assembly-->
     <SignAssembly>true</SignAssembly>
