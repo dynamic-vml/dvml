@@ -46,6 +46,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
+    <None Include="README.md" />
     <None Include="samples.md" />
     <None Include="docfx.json" />
     <None Include="index.md" />
