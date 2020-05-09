@@ -18,16 +18,16 @@
     <IsPackable>true</IsPackable>
     <Authors>César Roberto de Souza</Authors>
     <Company />
-    <Product>Dynamic ViewModel Lists</Product>
+    <Product>Dynamic View-Model Lists</Product>
     <Description>This library provides a special type of List&lt;T&gt; that can be used to create dynamic lists in ASP.NET MVC views, i.e. lists where the user can click "add new item" and the server renders a new list item using Ajax.</Description>
     <Copyright>2020 (c) César Roberto de Souza</Copyright>
     <PackageTags>aspnetcore library ajax viewmodel lists dynamiclists</PackageTags>
     <PackageProjectUrl>https://github.com/cesarsouza/dvml/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/dynamic-mvl/dvml.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/dynamic-vml/dvml.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageIcon>dvml.png</PackageIcon>
     <AssemblyName>DynamicVML</AssemblyName>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
 
     <!-- Strong name the assembly-->
     <SignAssembly>true</SignAssembly>

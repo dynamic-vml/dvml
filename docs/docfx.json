@@ -27,8 +27,8 @@
       "_disableBreadcrumb": false,
       "_disableToc": false,
       "_gitContribute": {
-        "repo": "https://github.com/cesarsouza/dvml/",
-        "branch": "development",
+        "repo": "https://github.com/dynamic-vml/dvml",
+        "branch": "master",
         "apiSpecFolder": "docs-ref-overwrite"
       }
     },
