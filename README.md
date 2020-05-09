@@ -1,7 +1,5 @@
 # Dynamic *View Model* Lists
 
--------
-
 The *Dynamic View Model Lists* library provides a templating engine to render dynamic item lists in ASP.NET. 
 A dynamic list is a list inside an HTML form where the user can add new items to a list after the page 
 has been rendered.
