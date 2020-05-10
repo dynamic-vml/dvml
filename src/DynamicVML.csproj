@@ -41,6 +41,7 @@
 
     <!-- Do not include bundleconfig.json: -->
     <ExcludeConfigFilesFromBuildOutput>true</ExcludeConfigFilesFromBuildOutput>
+    <Configurations>Debug;Release;Publish</Configurations>
   </PropertyGroup>
 
 
