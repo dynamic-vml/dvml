@@ -100,8 +100,11 @@ namespace DynamicVML.Internals
             throw new ApplicationException($"Unsupported {nameof(NewItemMethod)}.");
         }
 
-
-        internal EditorParams(string itemTemplate, string itemContainerTemplate, string listTemplate,
+        /// <summary>
+        ///   Creates a new instance of <see cref="EditorParams"/>.
+        /// </summary>
+        /// 
+        public EditorParams(string itemTemplate, string itemContainerTemplate, string listTemplate,
             string actionUrl, string addNewItemText, string prefix, object? additionalViewData,
             ListRenderMode mode, NewItemMethod method)
         {

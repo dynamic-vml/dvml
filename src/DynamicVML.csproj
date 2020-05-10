@@ -40,7 +40,7 @@
     <!--Razor specific options-->
     <RazorCompileOnBuild>true</RazorCompileOnBuild>
     <IncludeRazorContentInPack>false</IncludeRazorContentInPack>
-    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+    <!--<GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>-->
     <!--<EmbedRazorGenerateSources>true</EmbedRazorGenerateSources>-->
     <EnableDefaultRazorGenerateItems>true</EnableDefaultRazorGenerateItems>
 

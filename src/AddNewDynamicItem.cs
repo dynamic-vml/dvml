@@ -67,8 +67,11 @@ namespace DynamicVML
         /// 
         public byte[]? AdditionalViewData { get; set; }
 
-
-        internal AddNewDynamicItem(string containerId, string listTemplate, string itemContainerTemplate,
+        /// <summary>
+        ///   Creates a new instance of <see cref="AddNewDynamicItem"/>.
+        /// </summary>
+        /// 
+        public AddNewDynamicItem(string containerId, string listTemplate, string itemContainerTemplate,
             string itemTemplate, string prefix, ListRenderMode mode, object? additionalViewData)
         {
             this.ContainerId = containerId;

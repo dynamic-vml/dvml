@@ -26,8 +26,11 @@ namespace DynamicVML.Internals
         /// 
         public object? AdditionalViewData { get; }
 
-
-        internal DisplayParams(
+        /// <summary>
+        ///   Creates a new instance of <see cref="DisplayParams"/>.
+        /// </summary>
+        /// 
+        public DisplayParams(
             string itemTemplate, string itemContainerTemplate, string listTemplate, 
             string prefix, object? additionalViewData, ListRenderMode mode)
         {
