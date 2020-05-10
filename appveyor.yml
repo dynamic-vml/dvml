@@ -15,7 +15,7 @@ environment:
 before_build:
   - ps: $psw = ConvertTo-SecureString $env:pfx_key -AsPlainText -Force
   - ps: Import-PfxCertificate -FilePath C:\projects\dvml\src\Properties\dvml.pfx -CertStoreLocation Cert:\LocalMachine\My -Password $psw
-  - "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\sn.exe" -i C:\projects\dvml\src\Properties\dvml.pfx VS_KEY_E3D1E47790554D6E
+  - cmd: '"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\sn.exe" -i C:\projects\dvml\src\Properties\dvml.pfx VS_KEY_E3D1E47790554D6E'
   - nuget restore
 build:
   publish_nuget: true
