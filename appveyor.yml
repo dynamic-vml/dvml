@@ -1,14 +1,14 @@
-version: 1.0.{build}
 image: Visual Studio 2019
+
 dotnet_csproj:
   patch: true
   file: '**\*.csproj'
-  version: '{version}'
-  version_prefix: '{version}'
-  package_version: '{version}'
-  assembly_version: '{version}'
-  file_version: '{version}'
-  informational_version: '{version}'
+  version: $(newversion)
+  version_prefix: '{newversion}'
+  package_version: $(newversion)
+  assembly_version: $(newversion)
+  file_version: $(newversion)
+  informational_version: $(newversion)
   
 environment:
   pfx_key:
@@ -23,15 +23,6 @@ install:
     $xml = [xml](get-content $xmlPath)
     $version = ($xml.Project.PropertyGroup | ? {$_.Version}).Version
     $env:newversion = ($version.Substring(0, $version.LastIndexOf(".") + 1)) + $env:appveyor_build_number
-    
-dotnet_csproj:
-  patch: true
-  file: '**\*.csproj'
-  version: $(newversion)
-  package_version: $(newversion)
-  assembly_version: $(newversion)
-  file_version: $(newversion)
-  informational_version: $(newversion)
   
 test:
   # only assemblies to test
