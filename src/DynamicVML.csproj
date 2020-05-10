@@ -27,7 +27,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageIcon>dvml.png</PackageIcon>
     <AssemblyName>DynamicVML</AssemblyName>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
 
     <!-- Strong name the assembly-->
     <SignAssembly>true</SignAssembly>

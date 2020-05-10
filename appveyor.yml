@@ -1,0 +1,19 @@
+version: 1.0.{build}
+image: Visual Studio 2019
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  version_prefix: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+before_build:
+  - nuget restore
+build:
+  publish_nuget: true
+  publish_nuget_symbols: true
+  use_snupkg_format: true
+  publish_aspnet_core: true
+  verbosity: minimal
