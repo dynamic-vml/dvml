@@ -1,0 +1,29 @@
+version: 1.0.{build}
+image: Visual Studio 2019
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  version_prefix: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+environment:
+  pfx_key:
+    secure: dBFEXqEIAq2LjMxAIFMOg41T/9OZDNyfOupI1hnAlUe7yL4aB08MfQXvBlyMm6Ns
+before_build:
+  - nuget restore
+  
+test:
+  # only assemblies to test
+  assemblies:
+    only:
+      - 'tests\**\tests.dll'
+      
+build:
+  publish_nuget: false
+  publish_nuget_symbols: true
+  use_snupkg_format: true
+  publish_aspnet_core: true
+  verbosity: minimal
