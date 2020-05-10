@@ -9,7 +9,11 @@ dotnet_csproj:
   assembly_version: '{version}'
   file_version: '{version}'
   informational_version: '{version}'
+environment:
+  pfx_key:
+    secure: dBFEXqEIAq2LjMxAIFMOg41T/9OZDNyfOupI1hnAlUe7yL4aB08MfQXvBlyMm6Ns
 before_build:
+  - Import-PfxCertificate -FilePath Properties\dvml.pfx -CertStoreLocation Cert:\LocalMachine\My -Password %pfx_key%
   - nuget restore
 build:
   publish_nuget: true
