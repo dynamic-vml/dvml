@@ -8,7 +8,6 @@
     <RootNamespace>DynamicVML</RootNamespace>
     <StartupObject></StartupObject>
     <OutputType>Library</OutputType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -29,10 +28,6 @@
     <AssemblyName>DynamicVML</AssemblyName>
     <Version>1.1.0</Version>
 
-    <!-- Strong name the assembly-->
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>Properties\dvml.pfx</AssemblyOriginatorKeyFile>
-
     <!-- Razor <-> MVC options -->
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <GenerateMvcApplicationPartsAssemblyAttributes>true</GenerateMvcApplicationPartsAssemblyAttributes>
@@ -46,6 +41,14 @@
 
     <!-- Do not include bundleconfig.json: -->
     <ExcludeConfigFilesFromBuildOutput>true</ExcludeConfigFilesFromBuildOutput>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publish|AnyCPU'">
+    <!-- Sign the assembly and NuGet pack only if in Publish configuration -->
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Properties\dvml.pfx</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 
@@ -73,6 +76,5 @@
   <PropertyGroup>
     <StaticWebAssetBasePath Condition="$(StaticWebAssetBasePath) == ''">/</StaticWebAssetBasePath>
   </PropertyGroup>
-
 
 </Project>
