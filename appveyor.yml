@@ -13,7 +13,8 @@ environment:
   pfx_key:
     secure: dBFEXqEIAq2LjMxAIFMOg41T/9OZDNyfOupI1hnAlUe7yL4aB08MfQXvBlyMm6Ns
 before_build:
-  - Import-PfxCertificate -FilePath Properties\dvml.pfx -CertStoreLocation Cert:\LocalMachine\My -Password %pfx_key%
+  - ps: $psw = ConvertTo-SecureString $env:pfx_key -AsPlainText
+  - ps: Import-PfxCertificate -FilePath Properties\dvml.pfx -CertStoreLocation Cert:\LocalMachine\My -Password $psw
   - nuget restore
 build:
   publish_nuget: true
