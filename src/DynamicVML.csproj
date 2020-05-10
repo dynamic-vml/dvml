@@ -43,6 +43,9 @@
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <!--<EmbedRazorGenerateSources>true</EmbedRazorGenerateSources>-->
     <EnableDefaultRazorGenerateItems>true</EnableDefaultRazorGenerateItems>
+
+    <!-- Do not include bundleconfig.json: -->
+    <ExcludeConfigFilesFromBuildOutput>true</ExcludeConfigFilesFromBuildOutput>
   </PropertyGroup>
 
 
