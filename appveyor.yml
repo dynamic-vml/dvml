@@ -9,11 +9,29 @@ dotnet_csproj:
   assembly_version: '{version}'
   file_version: '{version}'
   informational_version: '{version}'
+  
 environment:
   pfx_key:
     secure: dBFEXqEIAq2LjMxAIFMOg41T/9OZDNyfOupI1hnAlUe7yL4aB08MfQXvBlyMm6Ns
+    
 before_build:
   - nuget restore
+  
+install:
+- ps: |
+    $xmlPath = "$env:appveyor_build_folder\src\DynamicVML.csproj"
+    $xml = [xml](get-content $xmlPath)
+    $version = ($xml.Project.PropertyGroup | ? {$_.Version}).Version
+    $env:newversion = ($version.Substring(0, $version.LastIndexOf(".") + 1)) + $env:appveyor_build_number
+    
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: $(newversion)
+  package_version: $(newversion)
+  assembly_version: $(newversion)
+  file_version: $(newversion)
+  informational_version: $(newversion)
   
 test:
   # only assemblies to test
