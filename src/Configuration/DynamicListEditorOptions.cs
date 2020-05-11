@@ -15,7 +15,7 @@ namespace DynamicVML.Options
     /// <summary>
     ///   Represents different options that can be used when displaying a <see cref="DynamicList{TViewModel, TOptions}"/>
     ///   for edigint. Instances of this class are normally created internally by the library when calling the 
-    ///   <see cref="EditorExtensions.ListEditorFor{TModel, TValue}(IHtmlHelper{TModel}, Expression{Func{TModel, TValue}}, string, string, string?, string?, string?, string, object?, string, ListRenderMode, NewItemMethod)">
+    ///   <see cref="EditorExtensions.ListEditorFor">
     ///   Html.EditorFor</see> extension method provided by this library.
     /// </summary>
     /// 

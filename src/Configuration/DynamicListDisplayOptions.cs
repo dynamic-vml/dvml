@@ -10,7 +10,7 @@ namespace DynamicVML.Options
     /// <summary>
     ///   Represents different options that can be used when displaying a <see cref="DynamicList{TViewModel, TOptions}"/>.
     ///   Instances of this class are normally created internally by the library when calling the 
-    ///   <see cref="EditorExtensions.DisplayListFor{TModel, TValue}(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper{TModel}, System.Linq.Expressions.Expression{System.Func{TModel, TValue}}, string?, string?, string?, string, object?, string, ListRenderMode)">
+    ///   <see cref="EditorExtensions.DisplayListFor">
     ///   Html.DisplayFor</see> extension method provided by this library.
     /// </summary>
     /// 

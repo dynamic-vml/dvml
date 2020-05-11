@@ -81,9 +81,9 @@ namespace DynamicVML.Extensions
             NewItemMethod method = NewItemMethod.Get)
             where TValue : IDynamicList
         {
-            var obj = PackViewData(html, propertyExpression, new ListViewDataObject
+            PackViewData(html, propertyExpression, new ViewDataObject
             {
-                DynamicListEditorOptions = new DynamicListEditorOptions()
+                EditorOptions = new DynamicListEditorOptions()
                 {
                     ItemTemplate = itemTemplate,
                     ItemContainerTemplate = itemContainerTemplate,
@@ -95,14 +95,15 @@ namespace DynamicVML.Extensions
                     Method = method
                 },
 
-                DynamicListAdditionalViewData = additionalViewData
+                AdditionalViewData = additionalViewData
             });
 
             try
             {
-                IHtmlContent output = html.EditorFor(propertyExpression,
-                    templateName: listContainerTemplate, // e.g. listContainerTemplate: DynamicListContainer
-                    additionalViewData: obj); 
+                IHtmlContent output = html.EditorFor(
+                    expression: propertyExpression,
+                    templateName: listContainerTemplate); // e.g. listContainerTemplate: DynamicListContainer
+                    
                 return output;
             }
             catch (Exception ex)
@@ -127,13 +128,14 @@ namespace DynamicVML.Extensions
         public static void RenderDynamicListEditor<TModel>(this IHtmlHelper<TModel> html)
             where TModel : IDynamicList
         {
-            EditorParams param = html.ViewData.GetEditorParameters(html.ViewData.Model.ContainerId);
+            ListEditorParameters param = html.ViewData.GetListEditorParameters(html.ViewData.Model.ContainerId);
 
             try
             {
-                html.RenderPartial(param.ListTemplate, // e.g. ListTemplate: DynamicListContainer
-                    html.ViewData.Model,
-                    html.ViewData);
+                html.RenderPartial(
+                    partialViewName: param.List.ListTemplate, // e.g. ListTemplate: EditorTemplates/DynamicListContainer
+                    model: html.ViewData.Model,
+                    viewData: html.ViewData);
             }
             catch (Exception ex)
             {
@@ -161,13 +163,13 @@ namespace DynamicVML.Extensions
         public static IHtmlContent RenderDynamicItemContainerEditor<TModel>(this IHtmlHelper<TModel> html, string itemId)
             where TModel : IDynamicList
         {
-            EditorItemParams param = html.ViewData.GetEditorItemParams(itemId, html.ViewData.Model.ContainerId);
+            ItemEditorParameters param = html.ViewData.GetItemEditorParameters(itemId, html.ViewData.Model.ContainerId);
 
             try
             {
-                IHtmlContent output = html.EditorFor(x => x[itemId], 
-                    param.EditorParams.ItemContainerTemplate, // e.g. ItemContainerTemplate: DynamicListItemContainer
-                    additionalViewData: param);
+                IHtmlContent output = html.EditorFor(expression: x => x[itemId],
+                    templateName: param.Editor.List.ItemContainerTemplate); // e.g. ItemContainerTemplate: DynamicListItemContainer
+                    
                 return output;
             }
             catch (Exception ex)
@@ -193,22 +195,22 @@ namespace DynamicVML.Extensions
         public static IHtmlContent RenderDynamicItemEditor<TModel>(this IHtmlHelper<TModel> html)
             where TModel : IDynamicListItem
         {
-            EditorItemParams param = html.ViewData.GetEditorItemParams(html.ViewData.Model.Index);
+            ItemEditorParameters param = html.ViewData.GetItemEditorParameters(html.ViewData.Model.Index);
 
             try
             {
-                if (param.EditorParams.Mode == ListRenderMode.ViewModelOnly)
+                if (param.Editor.List.Mode == ListRenderMode.ViewModelOnly)
                 {
-                    return html.EditorFor(x => x.ViewModel,
-                        param.EditorParams.ItemTemplate, // e.g. ItemTemplate: "Book"
-                        additionalViewData: param);
+                    return html.EditorFor(expression: x => x.ViewModel,
+                        templateName: param.Editor.List.ItemTemplate); // e.g. ItemTemplate: "Book"
                 }
 
-                if (param.EditorParams.Mode == ListRenderMode.ViewModelWithOptions)
+                if (param.Editor.List.Mode == ListRenderMode.ViewModelWithOptions)
                 {
-                    html.RenderPartial("EditorTemplates/" + param.EditorParams.ItemTemplate, // e.g. ItemTemplate: "Book"
-                        html.ViewData.Model,
-                        html.ViewData);
+                    html.RenderPartial(
+                        partialViewName: Constants.EditorTemplates + param.Editor.List.ItemTemplate, // e.g. ItemTemplate: "Book"
+                        model: html.ViewData.Model,
+                        viewData: html.ViewData);
                 }
 
                 throw new ApplicationException("Invalid DynamicList render mode.");
@@ -233,13 +235,13 @@ namespace DynamicVML.Extensions
         public static string RenderDynamicListAddNewItemText(this IHtmlHelper<IDynamicList> html)
         {
             // TODO: replace string with IHtmlContent to allow more flexibility
-            EditorParams param = html.ViewData.GetEditorParameters(html.ViewData.Model.ContainerId);
+            ListEditorParameters param = html.ViewData.GetListEditorParameters(html.ViewData.Model.ContainerId);
             return param.AddNewItemText;
         }
 
         /// <summary>
         ///   Gets a string with information about how request a new item from the server.
-        ///   Please see <see cref="EditorParams.GetActionContent()"/> for more information.
+        ///   Please see <see cref="ListEditorParameters.GetActionContent()"/> for more information.
         /// </summary>
         /// 
         /// <param name="html">The <see cref="IHtmlHelper{TModel}"/> associated with the current view.</param>
@@ -248,7 +250,7 @@ namespace DynamicVML.Extensions
         /// 
         public static string GetDynamicListActionUrl(this IHtmlHelper<IDynamicList> html)
         {
-            EditorParams param = html.ViewData.GetEditorParameters(html.ViewData.Model.ContainerId);
+            ListEditorParameters param = html.ViewData.GetListEditorParameters(html.ViewData.Model.ContainerId);
             return param.GetActionContent();
         }
 

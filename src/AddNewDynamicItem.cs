@@ -21,7 +21,7 @@ namespace DynamicVML
     ///   Represents the data object that the client can send to the server to request a new partial view for
     ///   a new list item using ajax. When the controller creates this new partial view, an instance of this 
     ///   class will be stored in the <see cref="ViewDataDictionary">ViewData</see> object of the views under 
-    ///   the key <see cref="Constants.NewItemParams"/>. 
+    ///   the key <see cref="Constants.ItemCreatorParameters"/>. 
     /// </summary>
     /// 
     /// <remarks>
@@ -51,18 +51,44 @@ namespace DynamicVML
     ///   by your code as it is part of the inner workings of the library.
     /// </remarks>
     /// 
-    public class AddNewDynamicItem : Parameters
+    public class AddNewDynamicItem
     {
+        public string? ContainerId { get; set; }
+
         /// <summary>
-        ///   Gets or sets the id of the div that should receive the new item.
+        ///   Gets the actual <see cref="DynamicListDisplayOptions.ItemTemplate"/> being used.
         /// </summary>
         /// 
-        public string ContainerId { get; set; } = String.Empty;
+        public string? ItemTemplate { get; set; }
+
+        /// <summary>
+        ///   Gets the actual <see cref="DynamicListDisplayOptions.ItemContainerTemplate"/> being used.
+        /// </summary>
+        /// 
+        public string? ItemContainerTemplate { get; set; }
+
+        /// <summary>
+        ///   Gets the actual <see cref="DynamicListDisplayOptions.ListTemplate"/> being used.
+        /// </summary>
+        /// 
+        public string? ListTemplate { get; set; }
+
+        /// <summary>
+        ///   Gets the actual HTML prefix being used for the forms.
+        /// </summary>
+        /// 
+        public string? Prefix { get; set; }
+
+        /// <summary>
+        ///   Gets the actual <see cref="ListRenderMode"/> being used.
+        /// </summary>
+        /// 
+        public ListRenderMode Mode { get; set; }
 
         /// <summary>
         ///   Gets any additional view data which may have been passed by the user
-        ///   when calling the <see cref="EditorExtensions.ListEditorFor{TModel, TValue}(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper{TModel}, System.Linq.Expressions.Expression{Func{TModel, TValue}}, string, string, string?, string?, string?, string, object?, string, ListRenderMode, NewItemMethod)">
-        ///   Html.EditorFor</see> extension method, represented by a UTF-8 byte 
+        ///   when calling the <see cref="EditorExtensions.ListEditorFor">
+        ///   Html.ListEditorFor</see> extension method, represented by a UTF-8 byte 
         ///   array that can be serialized to JSON and posted back to the server.
         /// </summary>
         /// 
@@ -76,9 +102,9 @@ namespace DynamicVML
             string itemTemplate, string prefix, ListRenderMode mode, object? additionalViewData)
         {
             this.ContainerId = containerId;
-            this.ListTemplate = listTemplate;
-            this.ItemContainerTemplate = itemContainerTemplate;
             this.ItemTemplate = itemTemplate;
+            this.ItemContainerTemplate = itemContainerTemplate;
+            this.ListTemplate = listTemplate;
             this.Prefix = prefix;
             this.Mode = mode;
             if (additionalViewData != null)
@@ -94,8 +120,8 @@ namespace DynamicVML
         /// 
         /// <remarks>
         /// >[!WARNING]
-        /// Additional user data is never included in the query string. See <see cref="EditorExtensions.ListEditorFor{TModel, TValue}(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper{TModel}, System.Linq.Expressions.Expression{Func{TModel, TValue}}, string, string, string?, string?, string?, string, object?, string, ListRenderMode, NewItemMethod)"/>
-        /// for more details.
+        /// Additional user data is never included in the query string. See 
+        /// <see cref="EditorExtensions.ListEditorFor"/> for more details.
         /// </remarks>
         /// 
         /// <returns>
@@ -135,7 +161,17 @@ namespace DynamicVML
             return JsonSerializer.Serialize(this);
         }
 
-
+        /// <summary>
+        ///   Gets the additional view data at <see cref="AdditionalViewData"/>
+        ///   as a <see cref="Dictionary{TKey, TValue}">Dictionary{string, string}</see>
+        ///   containing the key-value pairs in the <see cref="AdditionalViewData"/>.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///     A <see cref="Dictionary{TKey, TValue}"/> representing the contents 
+        ///     of the <see cref="AdditionalViewData"/> property of this class.
+        /// </returns>
+        /// 
         public Dictionary<string, string> GetAdditionalViewData()
         {
             if (AdditionalViewData == null)
@@ -164,7 +200,7 @@ namespace DynamicVML
         /// 
         /// <remarks>
         ///   By default, the library will generate a <see cref="Trace.TraceWarning(string)"/> if you
-        ///   specify any <c>additionalViewData</c> to the <see cref="EditorExtensions.ListEditorFor{TModel, TValue}(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper{TModel}, System.Linq.Expressions.Expression{Func{TModel, TValue}}, string, string, string?, string?, string?, string, object?, string, ListRenderMode, NewItemMethod)"/>
+        ///   specify any <c>additionalViewData</c> to the <see cref="EditorExtensions.ListEditorFor"/>
         ///   method while also specifying the HTTP method as <see cref="NewItemMethod.Get"/>. Setting
         ///   this static property to <c>false</c> will disable those warnings globally.
         /// </remarks>

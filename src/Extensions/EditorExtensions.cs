@@ -4,16 +4,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 using DynamicVML.Internals;
-using DynamicVML.Options;
 
-using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace DynamicVML.Extensions
 {
@@ -33,23 +28,27 @@ namespace DynamicVML.Extensions
     public static partial class EditorExtensions
     {
       
-        private static ListViewDataObject PackViewData<TModel, TValue>(IHtmlHelper<TModel> html,
-            Expression<Func<TModel, TValue>> propertyExpression, ListViewDataObject viewDataObject)
+        private static void PackViewData<TModel, TValue>(IHtmlHelper<TModel> html,
+            Expression<Func<TModel, TValue>> propertyExpression, ViewDataObject viewDataObject)
             where TValue : IDynamicList
         {
-            TValue list = GetList(html, propertyExpression);
+            TValue list = GetDynamicListFromModel(html, propertyExpression);
 
-            viewDataObject.DynamicListContainerId = list.ContainerId;
+            html.ViewData[Constants.CurrentContainerId] = list.ContainerId;
+            html.ViewData[Constants.AdditionalViewData] = viewDataObject.AdditionalViewData;
+            html.ViewData[Constants.DisplayOptions] = viewDataObject.DisplayOptions;
+            html.ViewData[Constants.EditorOptions] = viewDataObject.EditorOptions;
 
             // register options for the current container
             html.ViewData[list.ContainerId] = viewDataObject;
 
             // if we do not do like this, nesting containers with different types will not work 
             // because this object would get overwritten when we try to display children containers
-            return viewDataObject;
         }
 
-        private static TValue GetList<TModel, TValue>(IHtmlHelper<TModel> html, Expression<Func<TModel, TValue>> propertyExpression) where TValue : IDynamicList
+        private static TValue GetDynamicListFromModel<TModel, TValue>(this IHtmlHelper<TModel> html, 
+            Expression<Func<TModel, TValue>> propertyExpression) 
+            where TValue : IDynamicList
         {
             TValue list = propertyExpression.Compile()(html.ViewData.Model);
             if (list == null)

@@ -3,12 +3,10 @@
 // cesarsouza@gmail.com - http://crsouza.com
 
 using System;
-using System.Linq;
 
 using DynamicVML.Internals;
 using DynamicVML.Options;
 
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace DynamicVML.Extensions
@@ -23,35 +21,38 @@ namespace DynamicVML.Extensions
     public static partial class ViewDataExtensions
     {
        
-        public static DisplayItemParams GetDisplayItemParameters(this ViewDataDictionary viewData, string? itemId, string? containerId = null)
+        public static ItemDisplayParameters GetItemDisplayParameters(this ViewDataDictionary viewData,
+            string? itemId, string? containerId = null)
         {
             if (itemId == null)
                 throw new ArgumentNullException(nameof(itemId));
 
             if (viewData.TryGetValue(itemId, out object obj))
             {
-                if (obj != null && obj is DisplayItemParams d)
+                if (obj != null && obj is ItemDisplayParameters d)
                     return d;
             }
 
             if (containerId == null)
                 throw new ApplicationException();
 
-            DisplayParams param = viewData.GetDisplayParameters(containerId);
+            object? additionalViewData = viewData[Constants.AdditionalViewData];
+            ListDisplayParameters listParameters = viewData.GetListDisplayParameters(containerId);
 
-            var displayItemParams = new DisplayItemParams
-            {
-                DisplayParams = param,
-                AdditionalViewData = viewData[Constants.AdditionalViewData],
-                CurrentIndex = itemId
-            };
+            var itemParameters = new ItemDisplayParameters(containerId, itemId, additionalViewData, listParameters);
 
-            viewData[itemId] = displayItemParams;
-            return displayItemParams;
+            viewData[Constants.AdditionalViewData] = additionalViewData;
+            viewData[Constants.ListDisplayParameters] = listParameters;
+            viewData[Constants.ItemDisplayParameters] = itemParameters;
+            viewData[Constants.CurrentContainerId] = containerId;
+            viewData[Constants.CurrentIndex] = itemId;
+
+            viewData[itemId] = itemParameters;
+            return itemParameters;
         }
 
         /// <summary>
-        ///   Builds a new <see cref="DisplayParams"/> object gathering information from different
+        ///   Builds a new <see cref="ListDisplayParameters"/> object gathering information from different
         ///   sources, including <see cref="DynamicListDisplayOptions"/> objects that may be stored in the
         ///   view data, <see cref="DynamicListAttribute"/> attributes defined in the view model class,
         ///   or, as a last resort, reflection.
@@ -69,29 +70,29 @@ namespace DynamicVML.Extensions
         /// <param name="viewData">The view data object from where information will be extracted.</param>
         /// 
         /// <returns>
-        ///     A new <see cref="DisplayParams"/> object with the actual values to be 
+        ///     A new <see cref="ListDisplayParameters"/> object with the actual values to be 
         ///     used when rendering the editor view for your view model.
         /// </returns>
         /// 
-        public static DisplayParams GetDisplayParameters(this ViewDataDictionary viewData, string containerId)
+        public static ListDisplayParameters GetListDisplayParameters(this ViewDataDictionary viewData, string containerId)
         {
-            var viewDataObject = viewData[containerId] as ListViewDataObject;
+            var viewDataObject = viewData[containerId] as ViewDataObject;
             if (viewDataObject == null)
             {
-                throw new ApplicationException($"Could not find a {nameof(ListViewDataObject)} for the container {containerId}. " +
+                throw new ApplicationException($"Could not find a {nameof(ViewDataObject)} for the container {containerId}. " +
                     $"Please make sure to call the {nameof(EditorExtensions.DisplayListFor)} method when attempting to show " +
                     $"a display for an {nameof(IDynamicList)}.");
             }
 
-            if (viewDataObject.DynamicListDisplayParams != null)
-                return viewDataObject.DynamicListDisplayParams;
+            if (viewDataObject.DisplayParameters != null)
+                return viewDataObject.DisplayParameters;
 
             ListRenderMode mode = Constants.DefaultRenderMode;
             string? listTemplate = null;
             string? itemContainerTemplate = null;
             string? itemTemplate = null;
 
-            DynamicListAttribute? attribute = GetAttributeInfo(viewData);
+            DynamicListAttribute? attribute = GetDynamicListAttribute(viewData);
             if (attribute != null)
             {
                 if (attribute.ListTemplate != null)
@@ -104,7 +105,7 @@ namespace DynamicVML.Extensions
 
             if (listTemplate == null || itemContainerTemplate == null)
             {
-                DynamicListDisplayOptions? options = viewDataObject.DynamicListDisplayOptions;
+                DynamicListDisplayOptions? options = viewDataObject.DisplayOptions;
                 if (options == null)
                     throw new ApplicationException("The DynamicList view did not contain the DynamicList display options in its view data.");
                 if (options.Mode != null)
@@ -126,20 +127,24 @@ namespace DynamicVML.Extensions
             if (listTemplate == null)
                 listTemplate = Constants.DefaultListTemplate; // eg. DynamicList
 
-            listTemplate = "DisplayTemplates/" + listTemplate;
+            listTemplate = Constants.DisplayTemplates + listTemplate;
 
             string prefix = viewData.TemplateInfo.HtmlFieldPrefix;
             object? userData = GetUserDataAndRemoveFromView(viewData);
 
-            viewDataObject.DynamicListDisplayParams = new DisplayParams(
-                itemTemplate: itemTemplate,
-                itemContainerTemplate: itemContainerTemplate!,
-                listTemplate: listTemplate,
-                prefix: prefix,
-                additionalViewData: userData,
-                mode: mode);
+            var displayParameters = new ListDisplayParameters(
+                parameters: new ListParameters(
+                            containerId: containerId,
+                            itemTemplate: itemTemplate,
+                            itemContainerTemplate: itemContainerTemplate!,
+                            listTemplate: listTemplate,
+                            prefix: prefix,
+                            mode: mode),
+                additionalViewData: userData);
 
-            return viewDataObject.DynamicListDisplayParams;
+            viewDataObject.DisplayParameters = displayParameters;
+            viewData[Constants.ListDisplayParameters] = displayParameters;
+            return displayParameters;
         }
 
     }

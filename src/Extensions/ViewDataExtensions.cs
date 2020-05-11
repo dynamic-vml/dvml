@@ -33,7 +33,7 @@ namespace DynamicVML.Extensions
         /// 
         /// <returns>A <see cref="DynamicListAttribute"/> object if one is set; otherwise null.</returns>
         /// 
-        public static DynamicListAttribute? GetAttributeInfo(this ViewDataDictionary viewData)
+        public static DynamicListAttribute? GetDynamicListAttribute(this ViewDataDictionary viewData)
         {
             DefaultModelMetadata? metadata = viewData.ModelExplorer.Metadata as DefaultModelMetadata;
             if (metadata?.Attributes?.PropertyAttributes == null)
@@ -55,21 +55,21 @@ namespace DynamicVML.Extensions
                 userData = viewData[Constants.AdditionalViewData];
                 viewData.Remove(Constants.AdditionalViewData);
                 if (userData != null)
-                    viewData.Add(userData);
+                    viewData.Append(userData);
             }
             return userData;
         }
 
-        private static void Add(this ViewDataDictionary dict, object o)
+        public static void Append(this ViewDataDictionary viewData, object obj)
         {
-            foreach (var propertyInfo in o.GetType().GetProperties())
+            foreach (var propertyInfo in obj.GetType().GetProperties())
             {
                 if (propertyInfo.GetIndexParameters().Length == 0)
-                    dict.Add(propertyInfo.Name, propertyInfo.GetValue(o, null));
+                    viewData.Add(propertyInfo.Name, propertyInfo.GetValue(obj, null));
             }
         }
 
-        private static string GetViewModelTypeName(ViewDataDictionary viewData)
+        public static string GetViewModelTypeName(this ViewDataDictionary viewData)
         {
             var modelType = viewData.Model.GetType();
             var interfaces = modelType.GetInterfaces();

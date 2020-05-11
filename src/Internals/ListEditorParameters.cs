@@ -3,24 +3,19 @@
 // cesarsouza@gmail.com - http://crsouza.com
 
 using System;
-using System.Linq.Expressions;
 
 using DynamicVML.Extensions;
 using DynamicVML.Options;
-
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DynamicVML.Internals
 {
     /// <summary>
     ///   Represents the actual parameters being used to render an editor for the list. An instance of this class
-    ///   will be stored in the ViewData object of your view under the key <see cref="Constants.EditorParams"/>.
+    ///   will be stored in the ViewData object of your view under the key <see cref="Constants.ListEditorParameters"/>.
     /// </summary>
     /// 
-    public class EditorParams : Parameters
+    public class ListEditorParameters : ListDisplayParameters
     {
-        public string ContainerId { get; }
-
         /// <summary>
         ///   Gets the actual <see cref="DynamicListEditorOptions.ActionUrl"/> being used.
         /// </summary>
@@ -40,32 +35,21 @@ namespace DynamicVML.Internals
         public NewItemMethod Method { get; }
 
         /// <summary>
-        ///   Gets any additional view data which may have been passed by the user
-        ///   when calling the <see cref="EditorExtensions.ListEditorFor">
-        ///   Html.EditorFor</see> extension method.
-        /// </summary>
-        /// 
-        public object? AdditionalViewData { get; }
-
-
-        /// <summary>
         ///   Creates a new <see cref="AddNewDynamicItem"/> object based on
         ///   the information stored in this instance and the provided
         ///   <see paramref="containerId"/>.
         /// </summary>
         /// 
-        /// <param name="containerId">The id of the div that should receive the new item.</param>
-        /// 
         /// <returns>A new <see cref="AddNewDynamicItem"/> object.</returns>
         /// 
         public AddNewDynamicItem CreateNewItemParams()
         {
-            return new AddNewDynamicItem(ContainerId,
-                listTemplate: ListTemplate,
-                itemContainerTemplate: ItemContainerTemplate,
-                itemTemplate: ItemTemplate,
-                prefix: Prefix,
-                mode: Mode,
+            return new AddNewDynamicItem(List.ContainerId,
+                listTemplate: List.ListTemplate,
+                itemContainerTemplate: List.ItemContainerTemplate,
+                itemTemplate: List.ItemTemplate,
+                prefix: List.Prefix,
+                mode: List.Mode,
                 additionalViewData: AdditionalViewData);
         }
 
@@ -78,8 +62,6 @@ namespace DynamicVML.Internals
         ///   instructions will be passed to the JavaScript scripts in the
         ///   view to call the controller using Ajax.
         /// </summary>
-        /// 
-        /// <param name="containerId">The id of the div that should receive the new item.</param>
         /// 
         /// <returns>A string containing instructions on how to call the controller using Ajax.</returns>
         /// 
@@ -103,22 +85,15 @@ namespace DynamicVML.Internals
         }
 
         /// <summary>
-        ///   Creates a new instance of <see cref="EditorParams"/>.
+        ///   Creates a new instance of <see cref="ListEditorParameters"/>.
         /// </summary>
         /// 
-        public EditorParams(string containerId, string itemTemplate, string itemContainerTemplate, string listTemplate,
-            string actionUrl, string addNewItemText, string prefix, object? additionalViewData,
-            ListRenderMode mode, NewItemMethod method)
+        public ListEditorParameters(ListParameters parameters, object? additionalViewData,
+            string actionUrl, string addNewItemText, NewItemMethod method)
+            : base(parameters, additionalViewData)
         {
-            this.ContainerId = containerId;
             this.ActionUrl = actionUrl;
-            this.ItemTemplate = itemTemplate;
-            this.ItemContainerTemplate = itemContainerTemplate;
-            this.ListTemplate = listTemplate;
             this.AddNewItemText = addNewItemText;
-            this.Prefix = prefix;
-            this.AdditionalViewData = additionalViewData;
-            this.Mode = mode;
             this.Method = method;
         }
 

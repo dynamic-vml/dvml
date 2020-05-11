@@ -42,7 +42,7 @@ namespace DynamicVML.Internals
         ///   dictionaries when storing additional user data objects.
         /// </summary>
         /// 
-        public const string AdditionalViewData = nameof(ViewDataObject.DynamicListAdditionalViewData);
+        public const string AdditionalViewData = "DynamicList_AdditionalViewData";
 
         /// <summary>
         ///   Gets the string value that is used as a key in ViewData 
@@ -50,38 +50,94 @@ namespace DynamicVML.Internals
         ///   for the current item.
         /// </summary>
         /// 
-        public const string CurrentIndex = nameof(ItemViewDataObject.DynamicListCurrentIndex);
+        public const string CurrentIndex = "DynamicList_CurrentIndex";
 
+        /// <summary>
+        ///   Gets the string value that is used as a key in ViewData 
+        ///   dictionaries when storing the <see cref="IDynamicList.ContainerId"/>
+        ///   for the current list.
+        /// </summary>
+        /// 
+        public const string CurrentContainerId = "DynamicList_CurrentContainerId";
+
+
+
+
+        /// <summary>
+        ///   Gets the string value that is used as a key in ViewData 
+        ///   dictionaries when storing <see cref="EditorOptions"/>
+        ///   objects for the current view.
+        /// </summary>
+        /// 
+        public const string EditorOptions = "DynamicList_EditorOptions";
+
+        /// <summary>
+        ///   Gets the string value that is used as a key in ViewData 
+        ///   dictionaries when storing <see cref="DisplayOptions"/>
+        ///   objects for the current view.
+        /// </summary>
+        /// 
+        public const string DisplayOptions = "DynamicList_DisplayOptions";
+
+        /// <summary>
+        ///   Gets the string value that is used as a key in ViewData 
+        ///   dictionaries when storing <see cref="ListDisplayParameters"/>
+        ///   objects for the current view.
+        /// </summary>
+        /// 
+        public const string ListDisplayParameters = "DynamicList_ListDisplayParameters";
+
+        /// <summary>
+        ///   Gets the string value that is used as a key in ViewData 
+        ///   dictionaries when storing <see cref="ListEditorParameters"/>
+        ///   objects for the current view.
+        /// </summary>
+        /// 
+        public const string ListEditorParameters = "DynamicList_ListEditorParameters";
+
+        /// <summary>
+        ///   Gets the string value that is used as a key in ViewData 
+        ///   dictionaries when storing <see cref="ItemDisplayParameters"/>
+        ///   objects for the current view.
+        /// </summary>
+        /// 
+        public const string ItemDisplayParameters = "DynamicList_ItemDisplayParameters";
+
+        /// <summary>
+        ///   Gets the string value that is used as a key in ViewData 
+        ///   dictionaries when storing <see cref="ItemEditorParameters"/>
+        ///   objects for the current view.
+        /// </summary>
+        /// 
+        public const string ItemEditorParameters = "DynamicList_ItemEditorParameters";
+
+        /// <summary>
+        ///   Gets the string value that is used as a key in ViewData 
+        ///   dictionaries when storing <see cref="AddNewDynamicItem"/>
+        ///   objects for the current view.
+        /// </summary>
+        /// 
+        public const string ItemCreatorParameters = "DynamicList_ItemCreatorParameters";
+
+        internal const string EditorTemplates = "EditorTemplates/";
+        internal const string DisplayTemplates = "DisplayTemplates/";
 
         internal const ListRenderMode DefaultRenderMode = ListRenderMode.ViewModelOnly;
     }
 
 
-    // The classes below are used to pass additional data to methods like EditorFor or DisplayFor. The
-    // data could be passed in a more simpler way using anonymous types, but using real concrete classes
-    // allows us to get the nameof() of those methods to be registered on the Constants defined above.
-
-    // The names are long on purpose, to avoid collision with any other ViewData objects you might
-    // already have been using in your views. Unfortunately it makes those classes look a bit ugly.
+    // The classes below are used to pass additional data to methods like EditorFor or DisplayFor
 
     internal class ViewDataObject
     {
-        public string DynamicListContainerId { get; set; }
-        public EditorParams? DynamicListEditorParams { get; set; }
-        public DisplayParams? DynamicListDisplayParams { get; set; }
-        public object? DynamicListAdditionalViewData { get; set; }
-    }
+        public ListEditorParameters? EditorParameters { get; set; }
+        public ListDisplayParameters? DisplayParameters { get; set; }
 
-    internal class ListViewDataObject : ViewDataObject
-    {
-        public DynamicListEditorOptions? DynamicListEditorOptions { get; set; }
-        public DynamicListDisplayOptions? DynamicListDisplayOptions { get; set; }
-    }
+        public DynamicListEditorOptions? EditorOptions { get; set; }
+        public DynamicListDisplayOptions? DisplayOptions { get; set; }
 
-    internal class ItemViewDataObject : ViewDataObject
-    {
-        public AddNewDynamicItem? DynamicListNewItemParams { get; set; }
-        public string? DynamicListCurrentIndex { get; set; }
+        public object? AdditionalViewData { get; set; }
+
     }
 
 }

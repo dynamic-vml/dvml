@@ -109,22 +109,6 @@ namespace DynamicVML.Options
         public string? ItemTemplate { get; set; }
 
         /// <summary>
-        ///   Gets or sets the location where editor templates are normally found. In ASP.NET Core 3.0,
-        ///   editor templates are normally located under any of the "EditorTemplates" sub-folders in 
-        ///   either your controller's directory or your Shared directory under "Views".
-        /// </summary>
-        /// 
-        public string? EditorTemplates { get; set; }
-
-        /// <summary>
-        ///   Gets or sets the location where display templates are normally found. In ASP.NET Core 3.0,
-        ///   display templates are normally located under any of the "DisplayTemplates" sub-folders in 
-        ///   either your controller's directory or your Shared directory under "Views".
-        /// </summary>
-        /// 
-        public string? DisplayTemplates { get; set; }
-
-        /// <summary>
         ///   Gets or sets whether to use <see cref="NewItemMethod.Get">GET</see> or 
         ///   <see cref="NewItemMethod.Post">POST</see> when requesting new list items
         ///   from the server. Default is to use <see cref="NewItemMethod.Get">GET</see>.

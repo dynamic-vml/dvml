@@ -50,6 +50,8 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
+            if (parameters.ContainerId == null)
+                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
             var item = viewModel.ToDynamicList(parameters.ContainerId, options);
             return await PartialViewAsync(controller, engine, (IDynamicList)item, parameters);
         }
@@ -75,6 +77,8 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
+            if (parameters.ContainerId == null)
+                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
             var item = viewModel.ToDynamicList(parameters.ContainerId, options);
             return PartialView(controller, (IDynamicList)item, parameters);
         }
@@ -95,6 +99,8 @@ namespace DynamicVML.Extensions
             TViewModel viewModel, AddNewDynamicItem parameters)
             where TViewModel : class
         {
+            if (parameters.ContainerId == null)
+                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
             var item = viewModel.ToDynamicList(parameters.ContainerId);
             return PartialView(controller, (IDynamicList)item, parameters);
         }
@@ -113,7 +119,7 @@ namespace DynamicVML.Extensions
            IDynamicList item, AddNewDynamicItem parameters)
         {
             PartialViewResult partialView = controller.PartialView(parameters.ListTemplate, item);
-            partialView.ViewData.SetEditorItemParameters(item.Index, parameters, NewItemMethod.Get);
+            partialView.ViewData.SetItemEditorParameters(item.Index, parameters, NewItemMethod.Get);
             return partialView;
         }
 
@@ -152,7 +158,7 @@ namespace DynamicVML.Extensions
                 );
 
                 viewContext.ViewData.Model = item;
-                viewContext.ViewData.SetEditorItemParameters(item.Index, parameters, NewItemMethod.Post);
+                viewContext.ViewData.SetItemEditorParameters(item.Index, parameters, NewItemMethod.Post);
 
                 await viewResult.View.RenderAsync(viewContext);
                 string html = writer.GetStringBuilder().ToString();

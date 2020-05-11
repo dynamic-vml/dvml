@@ -34,17 +34,18 @@ namespace Tests
             string containerId = "4TUAPqX4s0SDU9fjH3oaFA";
 
             // Act
-            var e = new EditorParams(
-                containerId: containerId,
-                itemTemplate: "Book",
-                itemContainerTemplate: Constants.DefaultItemContainerTemplate,
-                listTemplate: "EditorTemplates/" + Constants.DefaultListTemplate,
+            var e = new ListEditorParameters(
+                parameters: new ListParameters(
+                                containerId: containerId,
+                                itemTemplate: "Book",
+                                itemContainerTemplate: Constants.DefaultItemContainerTemplate,
+                                listTemplate: "EditorTemplates/" + Constants.DefaultListTemplate,
+                                prefix: prefix,
+                                mode: ListRenderMode.ViewModelOnly),
                 actionUrl: "/Home/AddBook",
                 addNewItemText: "Add new bookName",
-                prefix: prefix,
                 additionalViewData: null,
-                method: NewItemMethod.Get,
-                mode: ListRenderMode.ViewModelOnly);
+                method: NewItemMethod.Get);
 
             string url = e.GetActionContent();
             Assert.Equal("/Home/AddBook/" +

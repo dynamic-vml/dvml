@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 using DynamicVML.Internals;
 using DynamicVML.Options;
@@ -58,7 +57,8 @@ namespace DynamicVML.Extensions
         /// 
         /// <returns>The rendered HTML for the list.</returns>
         /// 
-        public static IHtmlContent DisplayListFor<TModel, TValue>(this IHtmlHelper<TModel> html, Expression<Func<TModel, TValue>> propertyExpression,
+        public static IHtmlContent DisplayListFor<TModel, TValue>(this IHtmlHelper<TModel> html, 
+            Expression<Func<TModel, TValue>> propertyExpression,
             string? itemTemplate = null,
             string? itemContainerTemplate = null,
             string? listTemplate = null,
@@ -67,23 +67,23 @@ namespace DynamicVML.Extensions
             ListRenderMode mode = Constants.DefaultRenderMode)
             where TValue : IDynamicList
         {
-            var obj = PackViewData(html, propertyExpression, new ListViewDataObject
+            PackViewData(html, propertyExpression, new ViewDataObject
             {
-                DynamicListDisplayOptions = new DynamicListDisplayOptions()
+                DisplayOptions = new DynamicListDisplayOptions()
                 {
                     ItemTemplate = itemTemplate,
                     ItemContainerTemplate = itemContainerTemplate,
                     ListTemplate = listTemplate,
                     Mode = mode
                 },
-                DynamicListAdditionalViewData = additionalViewData
+                AdditionalViewData = additionalViewData
             });
 
             try
             {
-                IHtmlContent output = html.DisplayFor(propertyExpression,
-                    listContainerTemplate, // e.g. listContainerTemplate: DynamicListContainer
-                    additionalViewData: obj);
+                IHtmlContent output = html.DisplayFor(expression: propertyExpression,
+                    listContainerTemplate); // e.g. listContainerTemplate: DynamicListContainer
+
                 return output;
             }
             catch (Exception ex)
@@ -110,7 +110,7 @@ namespace DynamicVML.Extensions
         public static void RenderDynamicListDisplay<TModel>(this IHtmlHelper<TModel> html)
             where TModel : IDynamicList
         {
-            DisplayParams param = html.ViewData.GetDisplayParameters(html.ViewData.Model.ContainerId);
+            ListDisplayParameters param = html.ViewData.GetListDisplayParameters(html.ViewData.Model.ContainerId);
 
             // Note: MVC prevents us from calling Display/DisplayFor for the same object multiple times. This
             // happens due the check at TemplateBuilder next to the comment:
@@ -122,9 +122,10 @@ namespace DynamicVML.Extensions
 
             try
             {
-                html.RenderPartial(param.ListTemplate, // e.g. ListTemplate: DynamicListContainer
-                    html.ViewData.Model,
-                    html.ViewData);
+                html.RenderPartial(
+                    partialViewName: param.List.ListTemplate, // e.g. ListTemplate: DisplayTemplates/DynamicListContainer
+                    model: html.ViewData.Model,
+                    viewData: html.ViewData);
             }
             catch (Exception ex)
             {
@@ -150,13 +151,13 @@ namespace DynamicVML.Extensions
         public static IHtmlContent RenderDynamicItemContainerDisplay<TModel>(this IHtmlHelper<TModel> html, string itemId)
             where TModel : IDynamicList
         {
-            DisplayItemParams param = html.ViewData.GetDisplayItemParameters(itemId, html.ViewData.Model.ContainerId);
+            ItemDisplayParameters param = html.ViewData.GetItemDisplayParameters(itemId, html.ViewData.Model.ContainerId);
 
             try
             {
-                IHtmlContent output = html.DisplayFor(x => x[itemId],
-                    param.DisplayParams.ItemContainerTemplate,  // e.g. ItemContainerTemplate: DynamicItemContainer
-                    additionalViewData: param);
+                IHtmlContent output = html.DisplayFor(expression: x => x[itemId],
+                    templateName: param.Display.List.ItemContainerTemplate); // e.g. ItemContainerTemplate: DynamicItemContainer
+
                 return output;
             }
             catch (Exception ex)
@@ -184,22 +185,22 @@ namespace DynamicVML.Extensions
         public static IHtmlContent RenderDynamicItemDisplay<TModel>(this IHtmlHelper<TModel> html)
             where TModel : IDynamicListItem
         {
-            DisplayItemParams param = html.ViewData.GetDisplayItemParameters(html.ViewData.Model.Index);
+            ItemDisplayParameters param = html.ViewData.GetItemDisplayParameters(html.ViewData.Model.Index);
 
             try
             {
-                if (param.DisplayParams.Mode == ListRenderMode.ViewModelOnly)
+                if (param.Display.List.Mode == ListRenderMode.ViewModelOnly)
                 {
-                    return html.DisplayFor(x => x.ViewModel,
-                        param.DisplayParams.ItemTemplate, // e.g. ItemTemplate: "Book"
-                        additionalViewData: param);
+                    return html.DisplayFor(expression: x => x.ViewModel,
+                        templateName: param.Display.List.ItemTemplate); // e.g. ItemTemplate: "Book"
                 }
 
-                if (param.DisplayParams.Mode == ListRenderMode.ViewModelWithOptions)
+                if (param.Display.List.Mode == ListRenderMode.ViewModelWithOptions)
                 {
-                    html.RenderPartial("DisplayTemplates/" + param.DisplayParams.ItemTemplate, // e.g. ItemTemplate: "Book"
-                        html.ViewData.Model,
-                        html.ViewData);
+                    html.RenderPartial(
+                        partialViewName: Constants.DisplayTemplates + param.Display.List.ItemTemplate, // e.g. ItemTemplate: "Book"
+                        model: html.ViewData.Model,
+                        viewData: html.ViewData);
                 }
 
                 throw new ApplicationException("Invalid DynamicList render mode.");

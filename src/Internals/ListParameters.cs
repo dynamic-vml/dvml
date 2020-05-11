@@ -6,44 +6,57 @@ using DynamicVML.Options;
 
 namespace DynamicVML.Internals
 {
-    /// <summary>
-    ///   Represents the actual parameters being used to render the list. An instance of this class
-    ///   will be stored in the ViewData object of your view under the key <see cref="Constants.DisplayParams"/>.
-    ///   You should never need to instantiate this class directly as it is part of the inner workings
-    ///   of the library.
-    /// </summary>
-    /// 
-    public abstract class Parameters
+    
+    public class ListParameters : Parameters
     {
         /// <summary>
         ///   Gets the actual <see cref="DynamicListDisplayOptions.ItemTemplate"/> being used.
         /// </summary>
         /// 
-        public string ItemTemplate { get;  set; } = string.Empty;
+        public string ItemTemplate { get; }
 
         /// <summary>
         ///   Gets the actual <see cref="DynamicListDisplayOptions.ItemContainerTemplate"/> being used.
         /// </summary>
         /// 
-        public string ItemContainerTemplate { get;  set; } = string.Empty;
+        public string ItemContainerTemplate { get; }
 
         /// <summary>
         ///   Gets the actual <see cref="DynamicListDisplayOptions.ListTemplate"/> being used.
         /// </summary>
         /// 
-        public string ListTemplate { get;  set; } = string.Empty;
+        public string ListTemplate { get; }
 
         /// <summary>
         ///   Gets the actual HTML prefix being used for the forms.
         /// </summary>
         /// 
-        public string Prefix { get;  set; } = string.Empty;
+        public string Prefix { get; }
 
         /// <summary>
         ///   Gets the actual <see cref="ListRenderMode"/> being used.
         /// </summary>
         /// 
-        public ListRenderMode Mode { get;  set; }
+        public ListRenderMode Mode { get; }
+
+
+
+
+        /// <summary>
+        ///   Creates a new instance of <see cref="ListParameters"/>.
+        /// </summary>
+        /// 
+        public ListParameters(string containerId,
+            string itemTemplate, string itemContainerTemplate, string listTemplate,
+            string prefix, ListRenderMode mode)
+            : base(containerId)
+        {
+            this.ItemTemplate = itemTemplate;
+            this.ItemContainerTemplate = itemContainerTemplate;
+            this.ListTemplate = listTemplate;
+            this.Prefix = prefix;
+            this.Mode = mode;
+        }
 
     }
 }
