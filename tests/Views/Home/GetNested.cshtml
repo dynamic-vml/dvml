@@ -1,14 +1,15 @@
 ﻿@model Tests.NestedRoot
 @using DynamicVML.Extensions
 
-<dl class="row">
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.SomePropertyR)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.SomePropertyR)
-    </dd>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SomePropertyR)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SomePropertyR)
+        </dd>
 
-    @Html.DisplayListFor(model => model.Children)
-</dl>
-
+        @Html.DisplayListFor(model => model.Children)
+    </dl>
+</div>

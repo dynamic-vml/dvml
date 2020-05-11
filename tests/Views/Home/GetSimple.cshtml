@@ -1,14 +1,15 @@
 ﻿@model Tests.SimpleList
 @using DynamicVML.Extensions
 
-<dl class="row">
-    <dt class="col-sm-2">
-        @Html.DisplayNameFor(model => model.ParentProperty)
-    </dt>
-    <dd class="col-sm-10">
-        @Html.DisplayFor(model => model.ParentProperty)
-    </dd>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ParentProperty)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ParentProperty)
+        </dd>
 
-    @Html.DisplayListFor(model => model.Items)
-</dl>
-
+        @Html.DisplayListFor(model => model.Items)
+    </dl>
+</div>

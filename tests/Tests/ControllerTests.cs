@@ -68,7 +68,7 @@ namespace Tests
             Assert.Equal(containerId, actualId);
 
             Assert.NotEqual(itemId, containerId);
-            Assert.True(itemId.Length > 20 && itemId.Length < 25, $"itemId: {itemId}");
+            Assert.True(itemId.Length >= 20 && itemId.Length < 25, $"itemId: {itemId}");
         }
 
 

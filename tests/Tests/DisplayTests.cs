@@ -1,11 +1,6 @@
-using System.IO;
-using System.Linq;
+//#define SAVE
+
 using System.Net.Http;
-
-using AngleSharp.Html.Dom;
-
-using DynamicVML;
-using DynamicVML.Internals;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -32,14 +27,16 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/GetSimple";
-            string path = @"Resources\Display\simple.html";
+            string path = Helpers.GetResourcePath(@"Display\simple.html");
             string expected = path.ToHtml();
 
             // Test
             var response = await client.GetAsync(url);
             var content = await Helpers.GetDocumentAsync(response);
             var actual = content.ToHtml(minified: false);
-            //actual.ToFile(path);
+#if SAVE
+            actual.ToFile(path);
+#endif
 
             // Assert
             Assert.Equal(expected, actual);
@@ -50,14 +47,16 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/GetNested";
-            string path = @"Resources\Display\nested.html";
+            string path = Helpers.GetResourcePath(@"Display\nested.html");
             string expected = path.ToHtml();
 
             // Test
             var response = await client.GetAsync(url);
             var content = await Helpers.GetDocumentAsync(response);
             var actual = content.ToHtml(minified: false);
-            //actual.ToFile(path);
+#if SAVE
+            actual.ToFile(path);
+#endif
 
             // Assert
             Assert.Equal(expected, actual);
@@ -68,14 +67,16 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/GetNestedRecursive";
-            string path = @"Resources\Display\recursive.html";
+            string path = Helpers.GetResourcePath(@"Display\recursive.html");
             string expected = path.ToHtml();
 
             // Test
             var response = await client.GetAsync(url);
             var content = await Helpers.GetDocumentAsync(response);
             var actual = content.ToHtml(minified: false);
-            //actual.ToFile(path);
+#if SAVE
+            actual.ToFile(path);
+#endif
 
             // Assert
             Assert.Equal(expected, actual);

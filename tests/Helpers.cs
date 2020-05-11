@@ -1,6 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,16 +46,26 @@ namespace Tests
             }
         }
 
+        public static string GetResourcePath(string filePath)
+        {
+            string workingDirectory = Environment.CurrentDirectory;
+            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            return Path.Combine(projectDirectory, "Resources", filePath);
+        }
+
         public static string ToHtml(this string filePath)
         {
-            using var reader = new StreamReader(filePath);
-            return reader.ReadToEnd();
+            using var reader = new StreamReader(filePath, Encoding.ASCII);
+            string html = reader.ReadToEnd();
+            html = html.Replace("\r\n", "\n");
+            return html;
         }
 
         public static void ToFile(this string html, string filePath)
         {
             using var file = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-            using var writer = new StreamWriter(file);
+            using var writer = new StreamWriter(file, Encoding.ASCII);
+            html = html.Replace("\r\n", "\n");
             writer.Write(html);
         }
 
