@@ -34,15 +34,102 @@ namespace DynamicVML.Extensions
         /// 
         /// <returns>The <see cref="AddNewDynamicItem"/> stored in the view data.</returns>
         /// 
-        public static AddNewDynamicItem GetNewItemParameters(this ViewDataDictionary viewData)
+        public static AddNewDynamicItem GetNewItemParameters(this ViewDataDictionary viewData, string itemId)
         {
-            if (viewData.TryGetValue(Constants.NewItemParams, out object obj))
+            if (viewData.TryGetValue(itemId, out object obj))
                 if (obj is AddNewDynamicItem param)
                     return param;
 
             throw new ApplicationException($"Could not extract {nameof(AddNewDynamicItem)} from the ViewData. " +
-                $"Make sure you are using the {nameof(ControllerExtensions.PartialView)} extension method to "
-                + "create the dynamic item view in your controllers.");
+                $"Make sure you are using the {nameof(ControllerExtensions.PartialView)} extension method to " +
+                "create the dynamic item view in your controllers.");
+        }
+
+        public static void SetEditorItemParameters(this ViewDataDictionary viewData, string? itemId, AddNewDynamicItem parameters, NewItemMethod method)
+        {
+            if (itemId == null)
+                throw new ArgumentNullException(nameof(itemId));
+
+            var dict = parameters.GetAdditionalViewData();
+            var obj = new EditorItemParams
+            {
+                AdditionalViewData = dict,
+                CurrentIndex = itemId,
+                EditorParams = new EditorParams(
+                    containerId: parameters.ContainerId,
+                    itemTemplate: parameters.ItemTemplate,
+                    itemContainerTemplate: parameters.ItemContainerTemplate,
+                    listTemplate: String.Empty,
+                    actionUrl: String.Empty,
+                    addNewItemText: String.Empty,
+                    prefix: parameters.Prefix,
+                    additionalViewData: dict,
+                    mode: parameters.Mode,
+                    method: method)
+            };
+
+            viewData[itemId] = obj;
+
+            foreach (var pair in dict)
+                viewData[pair.Key] = pair.Value;
+
+            viewData.TemplateInfo.HtmlFieldPrefix = parameters.Prefix;
+        }
+
+        public static DisplayItemParams GetDisplayItemParameters(this ViewDataDictionary viewData, string? itemId, string? containerId = null)
+        {
+            if (itemId == null)
+                throw new ArgumentNullException(nameof(itemId));
+
+            if (viewData.TryGetValue(itemId, out object obj))
+            {
+                if (obj != null && obj is DisplayItemParams d)
+                    return d;
+            }
+
+            if (containerId == null)
+                throw new ApplicationException();
+
+            DisplayParams param = viewData.GetDisplayParameters(containerId);
+
+            var displayItemParams = new DisplayItemParams
+            {
+                DisplayParams = param,
+                AdditionalViewData = viewData[Constants.AdditionalViewData],
+                CurrentIndex = itemId
+            };
+
+            viewData[itemId] = displayItemParams;
+            return displayItemParams;
+        }
+
+        public static EditorItemParams GetEditorItemParams(this ViewDataDictionary viewData, string? itemId, string? containerId = null)
+        {
+            if (itemId == null)
+                throw new ArgumentNullException(nameof(itemId));
+
+            if (viewData.TryGetValue(itemId, out object obj))
+            {
+                if (obj != null && obj is EditorItemParams e)
+                    return e;
+            }
+
+            if (containerId == null)
+                throw new ApplicationException();
+
+            EditorParams param = viewData.GetEditorParameters(containerId);
+            AddNewDynamicItem newItemParams = param.CreateNewItemParams();
+
+            var editItemParams = new EditorItemParams
+            {
+                NewItemParams = newItemParams,
+                EditorParams = param,
+                AdditionalViewData = viewData[Constants.AdditionalViewData],
+                CurrentIndex = itemId
+            };
+
+            viewData[itemId] = editItemParams;
+            return editItemParams;
         }
 
         /// <summary>
@@ -57,7 +144,7 @@ namespace DynamicVML.Extensions
         ///   This method will resort to reflecion in case the <see cref="DynamicListEditorOptions.ItemTemplate"/>
         ///   has not been specified, which can incur a significant performance impact on the server. To avoid the 
         ///   extra performance hit, specify the name of the view you want to use for your view model when calling
-        ///   <see cref="EditorExtensions.ListEditorFor{TModel, TValue}(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper{TModel}, System.Linq.Expressions.Expression{Func{TModel, TValue}}, string, string, string?, string?, string?, string, object?, string, ListRenderMode, NewItemMethod)"/>
+        ///   <see cref="EditorExtensions.ListEditorFor"/>
         /// </remarks>
         /// 
         /// <param name="viewData">The view data object from where information will be extracted.</param>
@@ -67,14 +154,20 @@ namespace DynamicVML.Extensions
         ///     used when rendering the editor view for your view model.
         /// </returns>
         /// 
-        public static EditorParams GetEditorParameters(this ViewDataDictionary viewData)
+        public static EditorParams GetEditorParameters(this ViewDataDictionary viewData, string containerId)
         {
-            if (viewData.TryGetValue(Constants.EditorParams, out object obj))
-                if (obj != null && obj is EditorParams p)
-                    return p;
+            var viewDataObject = viewData[containerId] as ListViewDataObject;
+            if (viewDataObject == null)
+            {
+                throw new ApplicationException($"Could not find a {nameof(ListViewDataObject)} for the container {containerId}. " +
+                    $"Please make sure to call the {nameof(EditorExtensions.ListEditorFor)} method when attempting to show " +
+                    $"an editor for an {nameof(IDynamicList)}.");
+            }
+
+            if (viewDataObject.DynamicListEditorParams != null)
+                return viewDataObject.DynamicListEditorParams;
 
             ListRenderMode mode = Constants.DefaultRenderMode;
-            string editorTemplates = Constants.DefaultEditorTemplatesPath;
             string? listTemplate = null;
             string? itemContainerTemplate = null;
             string? itemTemplate = null;
@@ -91,21 +184,17 @@ namespace DynamicVML.Extensions
                     itemContainerTemplate = attribute.ItemContainerTemplate;
                 if (attribute.ItemTemplate != null)
                     itemTemplate = attribute.ItemTemplate;
-                if (attribute.EditorTemplates != null)
-                    editorTemplates = attribute.EditorTemplates;
                 method = attribute.Method;
                 mode = attribute.Mode;
             }
 
             if (listTemplate == null || itemContainerTemplate == null)
             {
-                var options = viewData[Constants.EditorOptions] as DynamicListEditorOptions;
+                DynamicListEditorOptions? options = viewDataObject.DynamicListEditorOptions;
                 if (options == null)
-                    throw new ApplicationException("The DynamicList view did not contain the DynamicList options in its view data.");
+                    throw new ApplicationException("The DynamicList view did not contain the DynamicList editor options in its view data.");
                 addNewItemText = options.AddNewItemText;
                 actionUrl = options.ActionUrl;
-                if (options.EditorTemplates != null)
-                    editorTemplates = options.EditorTemplates;
                 if (options.ItemTemplate != null)
                     itemTemplate = options.ItemTemplate;
                 if (options.ListTemplate != null)
@@ -138,27 +227,26 @@ namespace DynamicVML.Extensions
             if (itemContainerTemplate == null)
                 itemContainerTemplate = Constants.DefaultItemContainerTemplate; // eg. DynamicListItem
             if (listTemplate == null)
-                listTemplate = Constants.DefaultListTemplate; // eg. DynamicListInner
+                listTemplate = Constants.DefaultListTemplate; // eg. DynamicList
 
-
-            //itemTemplate = GetCompleteTemplatePath(editorTemplates, itemTemplate);
-            listTemplate = GetCompleteTemplatePath(editorTemplates, listTemplate);
+            listTemplate = "EditorTemplates/" + listTemplate;
 
             string prefix = viewData.TemplateInfo.HtmlFieldPrefix;
             object? userData = GetUserDataAndRemoveFromView(viewData);
 
-            var parameters = new EditorParams(
+            viewDataObject.DynamicListEditorParams = new EditorParams(
+                containerId: containerId,
                 itemTemplate: itemTemplate,
                 itemContainerTemplate: itemContainerTemplate!,
-                listTemplate: listTemplate!,
+                listTemplate: listTemplate,
                 actionUrl: actionUrl,
                 addNewItemText: addNewItemText,
                 prefix: prefix,
                 additionalViewData: userData,
                 mode: mode,
                 method: method);
-            viewData[Constants.EditorParams] = parameters;
-            return parameters;
+
+            return viewDataObject.DynamicListEditorParams;
         }
 
         /// <summary>
@@ -174,7 +262,7 @@ namespace DynamicVML.Extensions
         ///   <see cref="DynamicListEditorOptions.ActionUrl"/>, or <see cref="DynamicListEditorOptions.AddNewItemText"/>
         ///   have not been specified, which can incur
         ///   a significant performance impact on the server. To avoid the extra performance hit, specify the name 
-        ///   of the view you want to use for your view model when calling <see cref="EditorExtensions.DisplayListFor{TModel, TValue}(Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper{TModel}, System.Linq.Expressions.Expression{Func{TModel, TValue}}, string?, string?, string?, string, object?, string, ListRenderMode)"/>
+        ///   of the view you want to use for your view model when calling <see cref="EditorExtensions.DisplayListFor"/>
         /// </remarks>
         /// 
         /// <param name="viewData">The view data object from where information will be extracted.</param>
@@ -184,14 +272,20 @@ namespace DynamicVML.Extensions
         ///     used when rendering the editor view for your view model.
         /// </returns>
         /// 
-        public static DisplayParams GetDisplayParameters(this ViewDataDictionary viewData)
+        public static DisplayParams GetDisplayParameters(this ViewDataDictionary viewData, string containerId)
         {
-            if (viewData.TryGetValue(Constants.DisplayParams, out object obj))
-                if (obj != null && obj is DisplayParams p)
-                    return p;
+            var viewDataObject = viewData[containerId] as ListViewDataObject;
+            if (viewDataObject == null)
+            {
+                throw new ApplicationException($"Could not find a {nameof(ListViewDataObject)} for the container {containerId}. " +
+                    $"Please make sure to call the {nameof(EditorExtensions.DisplayListFor)} method when attempting to show " +
+                    $"a display for an {nameof(IDynamicList)}.");
+            }
+
+            if (viewDataObject.DynamicListDisplayParams != null)
+                return viewDataObject.DynamicListDisplayParams;
 
             ListRenderMode mode = Constants.DefaultRenderMode;
-            string displayTemplates = Constants.DefaultDisplayTemplatesPath;
             string? listTemplate = null;
             string? itemContainerTemplate = null;
             string? itemTemplate = null;
@@ -205,19 +299,15 @@ namespace DynamicVML.Extensions
                     itemContainerTemplate = attribute.ItemContainerTemplate;
                 if (attribute.ItemTemplate != null)
                     itemTemplate = attribute.ItemTemplate;
-                if (attribute.DisplayTemplates != null)
-                    displayTemplates = attribute.DisplayTemplates;
             }
 
             if (listTemplate == null || itemContainerTemplate == null)
             {
-                var options = viewData[Constants.DisplayOptions] as DynamicListDisplayOptions;
+                DynamicListDisplayOptions? options = viewDataObject.DynamicListDisplayOptions;
                 if (options == null)
-                    throw new ApplicationException("The DynamicList view did not contain the DynamicList options in its view data.");
+                    throw new ApplicationException("The DynamicList view did not contain the DynamicList display options in its view data.");
                 if (options.Mode != null)
                     mode = options.Mode.Value;
-                if (options.DisplayTemplates != null)
-                    displayTemplates = options.DisplayTemplates;
                 if (options.ItemTemplate != null)
                     itemTemplate = options.ItemTemplate;
                 if (options.ListTemplate != null)
@@ -231,26 +321,24 @@ namespace DynamicVML.Extensions
             if (itemTemplate == null)
                 itemTemplate = GetViewModelTypeName(viewData); // user-defined view, e.g. "Book"
             if (itemContainerTemplate == null)
-                itemContainerTemplate = Constants.DefaultItemContainerTemplate; // eg. DynamicListItem
+                itemContainerTemplate = Constants.DefaultItemContainerTemplate; // eg. DynamicItemContainer
             if (listTemplate == null)
-                listTemplate = Constants.DefaultListTemplate; // eg. DynamicListInner
+                listTemplate = Constants.DefaultListTemplate; // eg. DynamicList
 
-
-            //itemTemplate = GetCompleteTemplatePath(editorTemplates, itemTemplate);
-            listTemplate = GetCompleteTemplatePath(displayTemplates, listTemplate);
+            listTemplate = "DisplayTemplates/" + listTemplate;
 
             string prefix = viewData.TemplateInfo.HtmlFieldPrefix;
             object? userData = GetUserDataAndRemoveFromView(viewData);
 
-            var parameters = new DisplayParams(
+            viewDataObject.DynamicListDisplayParams = new DisplayParams(
                 itemTemplate: itemTemplate,
                 itemContainerTemplate: itemContainerTemplate!,
-                listTemplate: listTemplate!,
+                listTemplate: listTemplate,
                 prefix: prefix,
                 additionalViewData: userData,
                 mode: mode);
-            viewData[Constants.DisplayParams] = parameters;
-            return parameters;
+
+            return viewDataObject.DynamicListDisplayParams;
         }
 
         /// <summary>
@@ -287,15 +375,6 @@ namespace DynamicVML.Extensions
                     viewData.Add(userData);
             }
             return userData;
-        }
-
-        private static string? GetCompleteTemplatePath(string? templatesPath, string? viewPath)
-        {
-            if (viewPath == null)
-                return null;
-            if (templatesPath == null)
-                return viewPath;
-            return $"{templatesPath}/{viewPath}";
         }
 
         private static void Add(this ViewDataDictionary dict, object o)

@@ -53,50 +53,6 @@ namespace DynamicVML.Internals
         public const string CurrentIndex = nameof(ItemViewDataObject.DynamicListCurrentIndex);
 
 
-
-        /// <summary>
-        ///   Gets the string value that is used as a key in ViewData 
-        ///   dictionaries when storing <see cref="EditorOptions"/>
-        ///   objects for the current view.
-        /// </summary>
-        /// 
-        public const string EditorOptions = nameof(ListViewDataObject.DynamicListEditorOptions);
-
-        /// <summary>
-        ///   Gets the string value that is used as a key in ViewData 
-        ///   dictionaries when storing <see cref="DisplayOptions"/>
-        ///   objects for the current view.
-        /// </summary>
-        /// 
-        public const string DisplayOptions = nameof(ListViewDataObject.DynamicListDisplayOptions);
-
-        /// <summary>
-        ///   Gets the string value that is used as a key in ViewData 
-        ///   dictionaries when storing <see cref="DisplayParams"/>
-        ///   objects for the current view.
-        /// </summary>
-        /// 
-        public const string DisplayParams = nameof(ItemViewDataObject.DynamicListDisplayParams);
-
-        /// <summary>
-        ///   Gets the string value that is used as a key in ViewData 
-        ///   dictionaries when storing <see cref="EditorParams"/>
-        ///   objects for the current view.
-        /// </summary>
-        /// 
-        public const string EditorParams = nameof(ItemViewDataObject.DynamicListEditorParams);
-
-        /// <summary>
-        ///   Gets the string value that is used as a key in ViewData 
-        ///   dictionaries when storing <see cref="NewItemParams"/>
-        ///   objects for the current view.
-        /// </summary>
-        /// 
-        public const string NewItemParams = nameof(ItemViewDataObject.DynamicListNewItemParams);
-
-
-        internal const string DefaultEditorTemplatesPath = "EditorTemplates";
-        internal const string DefaultDisplayTemplatesPath = "DisplayTemplates";
         internal const ListRenderMode DefaultRenderMode = ListRenderMode.ViewModelOnly;
     }
 
@@ -110,6 +66,9 @@ namespace DynamicVML.Internals
 
     internal class ViewDataObject
     {
+        public string DynamicListContainerId { get; set; }
+        public EditorParams? DynamicListEditorParams { get; set; }
+        public DisplayParams? DynamicListDisplayParams { get; set; }
         public object? DynamicListAdditionalViewData { get; set; }
     }
 
@@ -121,8 +80,6 @@ namespace DynamicVML.Internals
 
     internal class ItemViewDataObject : ViewDataObject
     {
-        public EditorParams? DynamicListEditorParams { get; set; }
-        public DisplayParams? DynamicListDisplayParams { get; set; }
         public AddNewDynamicItem? DynamicListNewItemParams { get; set; }
         public string? DynamicListCurrentIndex { get; set; }
     }

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
+using System.Collections.Generic;
 
 namespace DynamicVML
 {
@@ -132,6 +133,16 @@ namespace DynamicVML
         public string ToJSON()
         {
             return JsonSerializer.Serialize(this);
+        }
+
+
+        public Dictionary<string, string> GetAdditionalViewData()
+        {
+            if (AdditionalViewData == null)
+                return new Dictionary<string, string>();
+            var readOnlySpan = new ReadOnlySpan<byte>(AdditionalViewData);
+            var data = JsonSerializer.Deserialize<Dictionary<string, string>>(readOnlySpan);
+            return data;
         }
 
         /// <summary>

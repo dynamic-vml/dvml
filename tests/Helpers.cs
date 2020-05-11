@@ -44,10 +44,25 @@ namespace Tests
             }
         }
 
-        public static string ToHtml(this IHtmlDocument content)
+        public static string ToHtml(this string filePath)
+        {
+            using var reader = new StreamReader(filePath);
+            return reader.ReadToEnd();
+        }
+
+        public static void ToFile(this string html, string filePath)
+        {
+            using var file = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+            using var writer = new StreamWriter(file);
+            writer.Write(html);
+        }
+
+        public static string ToHtml(this IHtmlDocument content, bool minified = false)
         {
             var writer = new StringWriter();
-            content.ToHtml(writer, new PrettyMarkupFormatter());
+            content.ToHtml(writer, minified ? 
+                (HtmlMarkupFormatter)new MinifyMarkupFormatter() :
+                (HtmlMarkupFormatter)new PrettyMarkupFormatter());
             var result = writer.ToString();
             return result;
         }

@@ -24,6 +24,8 @@ namespace DynamicVML.Options
     ///   to access this object, use the value of <see cref="Constants.DisplayParams"/> as the ViewData key.
     /// </remarks>
     /// 
+    /// <seealso cref="DynamicListDisplayOptions"/>
+    /// 
     public class DynamicListEditorOptions
     {
         /// <summary>
@@ -53,14 +55,6 @@ namespace DynamicVML.Options
         /// </summary>
         /// 
         public string? ListTemplate { get; set; }
-
-        /// <summary>
-        ///   Gets or sets the location where editor templates are normally found. In ASP.NET Core 3.0,
-        ///   editor templates are normally located under any of the "EditorTemplates" sub-folders in 
-        ///   either your controller's directory or your Shared directory under "Views".
-        /// </summary>
-        /// 
-        public string? EditorTemplates { get; set; }
 
         /// <summary>
         ///   Gets or sets the text that gets displayed on the "Add New Item" link that will

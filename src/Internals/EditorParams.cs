@@ -19,6 +19,8 @@ namespace DynamicVML.Internals
     /// 
     public class EditorParams : Parameters
     {
+        public string ContainerId { get; }
+
         /// <summary>
         ///   Gets the actual <see cref="DynamicListEditorOptions.ActionUrl"/> being used.
         /// </summary>
@@ -39,7 +41,7 @@ namespace DynamicVML.Internals
 
         /// <summary>
         ///   Gets any additional view data which may have been passed by the user
-        ///   when calling the <see cref="EditorExtensions.ListEditorFor{TModel, TValue}(IHtmlHelper{TModel}, Expression{Func{TModel, TValue}}, string, string, string?, string?, string?, string, object?, string, ListRenderMode, NewItemMethod)">
+        ///   when calling the <see cref="EditorExtensions.ListEditorFor">
         ///   Html.EditorFor</see> extension method.
         /// </summary>
         /// 
@@ -56,9 +58,9 @@ namespace DynamicVML.Internals
         /// 
         /// <returns>A new <see cref="AddNewDynamicItem"/> object.</returns>
         /// 
-        public AddNewDynamicItem CreateNewItemParams(string containerId)
+        public AddNewDynamicItem CreateNewItemParams()
         {
-            return new AddNewDynamicItem(containerId,
+            return new AddNewDynamicItem(ContainerId,
                 listTemplate: ListTemplate,
                 itemContainerTemplate: ItemContainerTemplate,
                 itemTemplate: ItemTemplate,
@@ -81,12 +83,12 @@ namespace DynamicVML.Internals
         /// 
         /// <returns>A string containing instructions on how to call the controller using Ajax.</returns>
         /// 
-        public string GetActionContent(string containerId)
+        public string GetActionContent()
         {
             if (ActionUrl.Length == 0)
                 return String.Empty;
 
-            var p = CreateNewItemParams(containerId);
+            var p = CreateNewItemParams();
 
             if (Method == NewItemMethod.Get)
             {
@@ -104,10 +106,11 @@ namespace DynamicVML.Internals
         ///   Creates a new instance of <see cref="EditorParams"/>.
         /// </summary>
         /// 
-        public EditorParams(string itemTemplate, string itemContainerTemplate, string listTemplate,
+        public EditorParams(string containerId, string itemTemplate, string itemContainerTemplate, string listTemplate,
             string actionUrl, string addNewItemText, string prefix, object? additionalViewData,
             ListRenderMode mode, NewItemMethod method)
         {
+            this.ContainerId = containerId;
             this.ActionUrl = actionUrl;
             this.ItemTemplate = itemTemplate;
             this.ItemContainerTemplate = itemContainerTemplate;

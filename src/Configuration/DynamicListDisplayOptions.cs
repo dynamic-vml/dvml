@@ -19,6 +19,8 @@ namespace DynamicVML.Options
     ///   to access this object, use the value of <see cref="Constants.DisplayParams"/> as the ViewData key.
     /// </remarks>
     /// 
+    /// <seealso cref="DynamicListEditorOptions"/>
+    /// 
     public class DynamicListDisplayOptions
     {
         /// <summary>
@@ -48,14 +50,6 @@ namespace DynamicVML.Options
         /// </summary>
         /// 
         public string? ListTemplate { get; set; }
-
-        /// <summary>
-        ///   Gets or sets the location where display templates are normally found. In ASP.NET Core 3.0,
-        ///   display templates are normally located under any of the "DisplayTemplates" sub-folders in 
-        ///   either your controller's directory or your Shared directory under "Views".
-        /// </summary>
-        /// 
-        public string? DisplayTemplates { get; set; }
 
         /// <summary>
         ///   Gets or sets whether the view for your viewmodel should receive a @model of type

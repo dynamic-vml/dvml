@@ -251,13 +251,18 @@ namespace DynamicVML
             if (options.ViewModel == null)
             {
                 throw new ArgumentNullException(nameof(options),
-                    "Tried to add an option object with no associated ViewModel to the list. If trying to" +
-                    "customize the list, please make sure that any options objects have their ViewModel property" +
-                    "non-null.");
+                    "Tried to add an option object with no associated ViewModel to the list. If trying to " +
+                    "customize the list, please make sure that any options objects have their ViewModel property " +
+                    "non-null. This exception can also be thrown during model binding - in this case, try " +
+                    "specifying the 'itemTemplatePath' argument when calling ListEditorFor() or DisplayListFor() " +
+                    "your view. Most likely, ASP.NET could not find the appropriate template from the name of " +
+                    "your model.");
             }
 
             if (String.IsNullOrEmpty(options.Index))
                 options.Index = CreateId();
+
+            //options.ContainerId = this.ContainerId;
 
             if (this.Dictionary.ContainsKey(options.Index))
             {
@@ -280,12 +285,35 @@ namespace DynamicVML
         /// 
         /// <param name="viewModel">The view model object to be added to this list.</param>
         /// 
-        public void Add(TViewModel viewModel)
+        public TOptions Add(TViewModel viewModel)
         {
-            this.Add(new TOptions()
+            var options = new TOptions()
             {
                 ViewModel = viewModel
-            });
+            };
+            this.Add(options);
+            return options;
+        }
+
+        /// <summary>
+        ///   Adds the specified <see typeparamref="TViewModel"/> object to the list. The list
+        ///   will automatically create a <see typeparamref="TOptions"/> object to wrap it and
+        ///   provide it with an unique ID.
+        /// </summary>
+        /// 
+        /// <param name="viewModel">The view model object to be added to this list.</param>
+        /// 
+        public TOptions Add(TViewModel viewModel, Action<TOptions> options)
+        {
+            var opt = new TOptions()
+            {
+                ViewModel = viewModel
+            };
+
+            options(opt);
+
+            this.Add(opt);
+            return opt;
         }
 
         /// <summary>

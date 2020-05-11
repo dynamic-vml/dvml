@@ -1,3 +1,5 @@
+using System.IO;
+using System.Linq;
 using System.Net.Http;
 
 using AngleSharp.Html.Dom;
@@ -33,9 +35,10 @@ namespace Tests
 
             // Act
             var e = new EditorParams(
+                containerId: containerId,
                 itemTemplate: "Book",
-                itemContainerTemplate: $"{Constants.DefaultItemContainerTemplate}",
-                listTemplate: $"EditorTemplates/{Constants.DefaultListTemplate}",
+                itemContainerTemplate: Constants.DefaultItemContainerTemplate,
+                listTemplate: "EditorTemplates/" + Constants.DefaultListTemplate,
                 actionUrl: "/Home/AddBook",
                 addNewItemText: "Add new bookName",
                 prefix: prefix,
@@ -43,9 +46,19 @@ namespace Tests
                 method: NewItemMethod.Get,
                 mode: ListRenderMode.ViewModelOnly);
 
-            string url = e.GetActionContent(containerId);
+            string url = e.GetActionContent();
+            Assert.Equal("/Home/AddBook/" +
+                "?ContainerId=4TUAPqX4s0SDU9fjH3oaFA" +
+                "&ListTemplate=EditorTemplates%2fDynamicList" +
+                "&ItemContainerTemplate=DynamicItemContainer" +
+                "&ItemTemplate=Book" +
+                "&Prefix=Namespace1.Namespace2.Namespace3" +
+                "&Mode=0",
+                url);
+
             var response = await client.GetAsync(url);
             var content = await Helpers.GetDocumentAsync(response);
+            var actual = content.ToHtml(minified: false);
 
             // Assert
             string htmlPrefix = prefix.Replace(".", "_");

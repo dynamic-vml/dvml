@@ -8,6 +8,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DynamicVML.Internals;
+using DynamicVML.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -112,8 +113,7 @@ namespace DynamicVML.Extensions
            IDynamicList item, AddNewDynamicItem parameters)
         {
             PartialViewResult partialView = controller.PartialView(parameters.ListTemplate, item);
-            partialView.ViewData[Constants.NewItemParams] = parameters;
-            partialView.ViewData.TemplateInfo.HtmlFieldPrefix = parameters.Prefix;
+            partialView.ViewData.SetEditorItemParameters(item.Index, parameters, NewItemMethod.Get);
             return partialView;
         }
 
@@ -152,14 +152,7 @@ namespace DynamicVML.Extensions
                 );
 
                 viewContext.ViewData.Model = item;
-                viewContext.ViewData[Constants.NewItemParams] = parameters;
-                viewContext.ViewData.TemplateInfo.HtmlFieldPrefix = parameters.Prefix;
-
-                if (parameters.AdditionalViewData != null)
-                {
-                    foreach (var pair in GetAdditionalViewData(parameters))
-                        viewContext.ViewData[pair.Key] = pair.Value;
-                }
+                viewContext.ViewData.SetEditorItemParameters(item.Index, parameters, NewItemMethod.Post);
 
                 await viewResult.View.RenderAsync(viewContext);
                 string html = writer.GetStringBuilder().ToString();
@@ -172,11 +165,7 @@ namespace DynamicVML.Extensions
             }
         }
 
-        private static Dictionary<string, string> GetAdditionalViewData(AddNewDynamicItem parameters)
-        {
-            var readOnlySpan = new ReadOnlySpan<byte>(parameters.AdditionalViewData);
-            var data = JsonSerializer.Deserialize<Dictionary<string, string>>(readOnlySpan);
-            return data;
-        }
+
+
     }
 }
