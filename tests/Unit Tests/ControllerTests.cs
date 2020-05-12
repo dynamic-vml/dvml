@@ -1,5 +1,3 @@
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 
 using AngleSharp.Html.Dom;
@@ -13,12 +11,12 @@ using Xunit;
 
 namespace Tests
 {
-    public class ControllerTests : IClassFixture<CustomWAF<Startup>>
+    public class ControllerTests : IClassFixture<WebApplicationFactory<Startup>>
     {
         private readonly HttpClient client;
         private readonly WebApplicationFactory<Startup> factory;
 
-        public ControllerTests(CustomWAF<Startup> factory)
+        public ControllerTests(WebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
             this.client = this.factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -47,7 +45,7 @@ namespace Tests
                 additionalViewData: null,
                 method: NewItemMethod.Get);
 
-            string url = e.GetActionContent();
+            string url = e.GetActionInfo();
             Assert.Equal("/Home/AddBook/" +
                 "?ContainerId=4TUAPqX4s0SDU9fjH3oaFA" +
                 "&ListTemplate=EditorTemplates%2fDynamicList" +
@@ -59,7 +57,7 @@ namespace Tests
 
             var response = await client.GetAsync(url);
             var content = await Helpers.GetDocumentAsync(response);
-            var actual = content.ToHtml(minified: false);
+            var actual = content.ToStandardizedHtml(minified: false);
 
             // Assert
             string htmlPrefix = prefix.Replace(".", "_");

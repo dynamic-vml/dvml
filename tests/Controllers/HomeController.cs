@@ -3,15 +3,23 @@ using DynamicVML;
 using DynamicVML.Extensions;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Tests
 {
     public class HomeController : Controller
     {
-        public HomeController()
+        ILogger<HomeController> logger;
+
+        public HomeController(ILogger<HomeController> logger)
         {
+            this.logger = logger;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         public IActionResult AddBook(AddNewDynamicItem parameters)
         {
@@ -23,6 +31,9 @@ namespace Tests
             return this.PartialView(newBookViewModel, parameters);
         }
 
+
+
+        #region Basic display tests
         public IActionResult GetSimple()
         {
             var vm = new SimpleList(4);
@@ -33,6 +44,7 @@ namespace Tests
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -47,6 +59,7 @@ namespace Tests
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -61,25 +74,27 @@ namespace Tests
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, ex.Message);
                 throw;
             }
         }
+        #endregion
 
 
 
-
-
+        #region basic editor tests
 
         public IActionResult EditSimple()
         {
             var vm = new SimpleList(4);
-            
+
             try
             {
                 return PartialView(vm);
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -94,6 +109,7 @@ namespace Tests
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, ex.Message);
                 throw;
             }
         }
@@ -108,8 +124,41 @@ namespace Tests
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, ex.Message);
                 throw;
             }
         }
+        #endregion
+
+
+
+
+        #region add new item tests
+        public IActionResult AddSimpleItem(AddNewDynamicItem parameters)
+        {
+            var vm = new SimpleItem(99);
+
+            return this.PartialView(vm, parameters, options =>
+            {
+                options.Index = "N";
+            });
+        }
+
+        public IActionResult EditSimpleWithLayout()
+        {
+            var vm = new SimpleList(1);
+
+            try
+            {
+                return View("EditSimple", vm);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
+        #endregion
     }
 }

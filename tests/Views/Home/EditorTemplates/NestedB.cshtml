@@ -2,14 +2,7 @@
 @using DynamicVML.Extensions
 
 <div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SomePropertyB)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.EditorFor(model => model.SomePropertyB)
-        </dd>
-
-        @Html.ListEditorFor(model => model.Children)
-    </dl>
+    @Html.DisplayNameFor(model => model.SomePropertyB)
+    @Html.EditorFor(model => model.SomePropertyB)
+    @Html.ListEditorFor(model => model.Children)
 </div>

@@ -3,17 +3,18 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:53111/",
-      "sslPort": 44364
+      "applicationUrl": "http://localhost:5000/"
     }
   },
   "profiles": {
     "tests": {
-      "commandName": "Project",
+      "commandName": "IISExpress",
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+      "ancmHostingModel": "OutOfProcess",
+      "applicationUrl": "http://localhost:5000"
     }
   }
 }

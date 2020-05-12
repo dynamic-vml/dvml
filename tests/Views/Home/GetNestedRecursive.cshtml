@@ -2,20 +2,9 @@
 @using DynamicVML.Extensions
 
 <div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SomeProperty)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SomeProperty)
-        </dd>
-
-        @Html.DisplayListFor(model => model.Children)
-    </dl>
+    @Html.DisplayNameFor(model => model.Id)
+    @Html.DisplayFor(model => model.Id)
+    @Html.DisplayNameFor(model => model.SomeProperty)
+    @Html.DisplayFor(model => model.SomeProperty)
+    @Html.DisplayListFor(model => model.Children)
 </div>

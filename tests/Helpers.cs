@@ -7,19 +7,24 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using AngleSharp;
+using AngleSharp.Dom;
 using AngleSharp.Html;
 using AngleSharp.Html.Dom;
+using AngleSharp.Html.Parser;
 using AngleSharp.Io;
 
 namespace Tests
 {
     public static class Helpers
     {
-        public static async Task<IHtmlDocument> GetDocumentAsync(this HttpResponseMessage response)
+        public static async Task<IHtmlDocument> GetDocumentAsync(this HttpResponseMessage response,
+            IBrowsingContext context = null)
         {
+            if (context == null)
+                context = BrowsingContext.New();
+
             var content = await response.Content.ReadAsStringAsync();
-            var document = await BrowsingContext.New()
-                .OpenAsync(ResponseFactory, CancellationToken.None);
+            var document = await context.OpenAsync(ResponseFactory, CancellationToken.None);
             return (IHtmlDocument)document;
 
             void ResponseFactory(VirtualResponse htmlResponse)
@@ -36,12 +41,8 @@ namespace Tests
                 void MapHeaders(HttpHeaders headers)
                 {
                     foreach (var header in headers)
-                    {
                         foreach (var value in header.Value)
-                        {
                             htmlResponse.Header(header.Key, value);
-                        }
-                    }
                 }
             }
         }
@@ -69,14 +70,34 @@ namespace Tests
             writer.Write(html);
         }
 
-        public static string ToHtml(this IHtmlDocument content, bool minified = false)
+        public static string ToStandardizedHtml(this IDocument content, bool minified = false)
         {
-            var writer = new StringWriter();
-            content.ToHtml(writer, minified ? 
-                (HtmlMarkupFormatter)new MinifyMarkupFormatter() :
-                (HtmlMarkupFormatter)new PrettyMarkupFormatter());
-            var result = writer.ToString();
-            return result;
+            if (minified)
+            {
+                var writer = new StringWriter();
+                content.ToHtml(writer, new MinifyMarkupFormatter()
+                {
+                    ShouldKeepAttributeQuotes = true,
+                    ShouldKeepComments = false,
+                    ShouldKeepImpliedEndTag = true,
+                    ShouldKeepStandardElements = true,
+                    ShouldKeepEmptyAttributes = false
+                });
+                return writer.ToString();
+            }
+            else
+            {
+                string min = ToStandardizedHtml(content, minified: true);
+                var parser = new HtmlParser();
+                IHtmlDocument document = parser.ParseDocument(min);
+                var writer = new StringWriter();
+                document.ToHtml(writer, new PrettyMarkupFormatter()
+                {
+                    Indentation = "  ",
+                    NewLine = "\n"
+                });
+                return writer.ToString();
+            }
         }
     }
 }

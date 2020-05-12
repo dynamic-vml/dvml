@@ -8,12 +8,12 @@ using Xunit;
 
 namespace Tests
 {
-    public class DisplayTests : IClassFixture<CustomWAF<Startup>>
+    public class BasicDisplayTests : IClassFixture<WebApplicationFactory<Startup>>
     {
         private readonly HttpClient client;
         private readonly WebApplicationFactory<Startup> factory;
 
-        public DisplayTests(CustomWAF<Startup> factory)
+        public BasicDisplayTests(WebApplicationFactory<Startup> factory)
         {
             this.factory = factory;
             this.client = this.factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -33,7 +33,7 @@ namespace Tests
             // Test
             var response = await client.GetAsync(url);
             var content = await Helpers.GetDocumentAsync(response);
-            var actual = content.ToHtml(minified: false);
+            var actual = content.ToStandardizedHtml(minified: false);
 #if SAVE
             actual.ToFile(path);
 #endif
@@ -53,7 +53,7 @@ namespace Tests
             // Test
             var response = await client.GetAsync(url);
             var content = await Helpers.GetDocumentAsync(response);
-            var actual = content.ToHtml(minified: false);
+            var actual = content.ToStandardizedHtml(minified: false);
 #if SAVE
             actual.ToFile(path);
 #endif
@@ -73,7 +73,7 @@ namespace Tests
             // Test
             var response = await client.GetAsync(url);
             var content = await Helpers.GetDocumentAsync(response);
-            var actual = content.ToHtml(minified: false);
+            var actual = content.ToStandardizedHtml(minified: false);
 #if SAVE
             actual.ToFile(path);
 #endif
