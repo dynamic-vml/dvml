@@ -34,14 +34,14 @@
     font-weight: 900; }
 
 
-  .logo {
+.logo {
       padding: 5pt;
-      width: 35pt;
-      height: 35pt;
+      width: 34pt;
+      height: 33pt;
       fill: #FEFEFE;
       margin-top: 2pt;
       margin-left: -8pt;
-  }
+}
 
 .logo-color {
     margin-top: 1px;
@@ -51,8 +51,15 @@
 .article-title {
     padding-top: 21px;
     margin-top: 0px !important;
-    margin-bottom: 10px;
+    margin-bottom: 0px !important;
     font-size: 36px !important;
+}
+
+.article-logo {
+    width: 64px;
+    height: 64px;
+    margin-top: -20px;
+    margin-right: 3px;
 }
 
 .article h1 {

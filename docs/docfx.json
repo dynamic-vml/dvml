@@ -20,7 +20,7 @@
       "_appTitle": "DVML",
       "_appFooter": "Copyright &copy; 2020 C&eacute;sar Roberto de Souza - All files are available under the <a href=\"https://opensource.org/licenses/MIT\">MIT license</a> except the logo, which comes from <a href=\"https://fontawesome.com/\">FontAwesome.",
       "_enableSearch": true,
-      "_appLogoPath": "images/fas/fa-stream/stream-solid-white.svg",
+      "_appLogoPath": "images/logo-128.png",
       "_appFaviconPath": "images/fas/fa-stream/stream-solid-gray.svg",
       "_enableNewTab": true,
       "_disableNavbar": false,

@@ -1,4 +1,8 @@
-<h1 class="article-title"><i class="fas fa-stream logo-color"></i> Dynamic <strong class="logo-color">View Model</strong> Lists</h1>
+---
+title: Dynamic View-Model Lists
+---
+
+<h1 class="article-title"><img src="images/logo-512.png" class="article-logo"/>ynamic View-Model Lists</h1>
 
 -------
 
