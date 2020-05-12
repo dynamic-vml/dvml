@@ -1,4 +1,4 @@
-# Dynamic *View Model* Lists
+# Dynamic View-Model Lists
 
 [![Build status](https://ci.appveyor.com/api/projects/status/77ej7gsuxo10q5hn?svg=true)](https://ci.appveyor.com/project/cesarsouza/dvml)
 
