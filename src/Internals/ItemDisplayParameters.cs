@@ -4,13 +4,29 @@
 
 namespace DynamicVML.Internals
 {
+    /// <summary>
+    ///   Represents the actual parameters being used to render an item of the list for display. An instance of this class
+    ///   will be stored in the ViewData object of your view under the key <see cref="Constants.ItemDisplayParameters"/>.
+    /// </summary>
+    /// 
+    /// <seealso cref="ListDisplayParameters"/>
+    /// <seealso cref="ItemEditorParameters"/>
+    /// 
     public class ItemDisplayParameters : ItemParameters
     {
+        /// <summary>
+        ///   Gets the parameters used to render this list for display.
+        /// </summary>
+        /// 
         public ListDisplayParameters Display { get; }
 
-        public ItemDisplayParameters(string containerId, string itemId, object? additionalViewData,
+        /// <summary>
+        ///   Creates a new instance of <see cref="ItemDisplayParameters"/>.
+        /// </summary>
+        /// 
+        public ItemDisplayParameters(string containerId, string itemId,
             ListDisplayParameters parameters)
-            : base(containerId, itemId, additionalViewData)
+            : base(containerId, itemId)
         {
             this.Display = parameters;
         }

@@ -241,7 +241,7 @@ namespace DynamicVML.Extensions
 
         /// <summary>
         ///   Gets a string with information about how request a new item from the server.
-        ///   Please see <see cref="ListEditorParameters.GetActionContent()"/> for more information.
+        ///   Please see <see cref="ListEditorParameters.GetActionInfo()"/> for more information.
         /// </summary>
         /// 
         /// <param name="html">The <see cref="IHtmlHelper{TModel}"/> associated with the current view.</param>
@@ -251,7 +251,7 @@ namespace DynamicVML.Extensions
         public static string GetDynamicListActionUrl(this IHtmlHelper<IDynamicList> html)
         {
             ListEditorParameters param = html.ViewData.GetListEditorParameters(html.ViewData.Model.ContainerId);
-            return param.GetActionContent();
+            return param.GetActionInfo();
         }
 
     }

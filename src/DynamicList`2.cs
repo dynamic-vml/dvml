@@ -302,6 +302,9 @@ namespace DynamicVML
         /// </summary>
         /// 
         /// <param name="viewModel">The view model object to be added to this list.</param>
+        /// <param name="options">A method that can be used to customize the <typeparamref name="TOptions"/>
+        ///     object that will be used to wrap the <paramref name="viewModel"/> before it gets added
+        ///     to the list. This can be used to specify custom IDs for list items.</param>
         /// 
         public TOptions Add(TViewModel viewModel, Action<TOptions> options)
         {

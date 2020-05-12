@@ -20,36 +20,6 @@ namespace DynamicVML.Extensions
     /// 
     public static partial class ViewDataExtensions
     {
-       
-        public static ItemDisplayParameters GetItemDisplayParameters(this ViewDataDictionary viewData,
-            string? itemId, string? containerId = null)
-        {
-            if (itemId == null)
-                throw new ArgumentNullException(nameof(itemId));
-
-            if (viewData.TryGetValue(itemId, out object obj))
-            {
-                if (obj != null && obj is ItemDisplayParameters d)
-                    return d;
-            }
-
-            if (containerId == null)
-                throw new ApplicationException();
-
-            object? additionalViewData = viewData[Constants.AdditionalViewData];
-            ListDisplayParameters listParameters = viewData.GetListDisplayParameters(containerId);
-
-            var itemParameters = new ItemDisplayParameters(containerId, itemId, additionalViewData, listParameters);
-
-            viewData[Constants.AdditionalViewData] = additionalViewData;
-            viewData[Constants.ListDisplayParameters] = listParameters;
-            viewData[Constants.ItemDisplayParameters] = itemParameters;
-            viewData[Constants.CurrentContainerId] = containerId;
-            viewData[Constants.CurrentIndex] = itemId;
-
-            viewData[itemId] = itemParameters;
-            return itemParameters;
-        }
 
         /// <summary>
         ///   Builds a new <see cref="ListDisplayParameters"/> object gathering information from different
@@ -60,7 +30,7 @@ namespace DynamicVML.Extensions
         /// 
         /// <remarks>
         /// >[!WARNING]
-        ///   This method will resort to reflecion in case the <see cref="DynamicListEditorOptions.ItemTemplate"/>,
+        ///   This method will resort to reflecion in case the <see cref="DynamicListOptions.ItemTemplate"/>,
         ///   <see cref="DynamicListEditorOptions.ActionUrl"/>, or <see cref="DynamicListEditorOptions.AddNewItemText"/>
         ///   have not been specified, which can incur
         ///   a significant performance impact on the server. To avoid the extra performance hit, specify the name 
@@ -68,6 +38,7 @@ namespace DynamicVML.Extensions
         /// </remarks>
         /// 
         /// <param name="viewData">The view data object from where information will be extracted.</param>
+        /// <param name="containerId">The HTML div element ID for the current list.</param>
         /// 
         /// <returns>
         ///     A new <see cref="ListDisplayParameters"/> object with the actual values to be 
@@ -127,7 +98,7 @@ namespace DynamicVML.Extensions
             if (listTemplate == null)
                 listTemplate = Constants.DefaultListTemplate; // eg. DynamicList
 
-            listTemplate = Constants.DisplayTemplates + listTemplate;
+            listTemplate = Constants.DisplayTemplates + listTemplate; // e.g. DisplayTemplates/DynamicList
 
             string prefix = viewData.TemplateInfo.HtmlFieldPrefix;
             object? userData = GetUserDataAndRemoveFromView(viewData);
@@ -136,7 +107,7 @@ namespace DynamicVML.Extensions
                 parameters: new ListParameters(
                             containerId: containerId,
                             itemTemplate: itemTemplate,
-                            itemContainerTemplate: itemContainerTemplate!,
+                            itemContainerTemplate: itemContainerTemplate,
                             listTemplate: listTemplate,
                             prefix: prefix,
                             mode: mode),
@@ -147,5 +118,43 @@ namespace DynamicVML.Extensions
             return displayParameters;
         }
 
+        /// <summary>
+        ///   Retrieves the <see cref="ItemDisplayParameters"/> object stored in the <see cref="ViewDataDictionary"/>.
+        ///   If no <see cref="ItemDisplayParameters"/> is available, a new one will be created from the information 
+        ///   stored in the <see cref="ListDisplayParameters"/> object that should have been stored in the ViewData. 
+        /// </summary>
+        /// 
+        /// <param name="viewData">The view data object from where information will be extracted.</param>
+        /// <param name="containerId">The HTML div element ID for the current list.</param>
+        /// <param name="itemId">The HTML div element ID for the current list item.</param>
+        /// 
+        public static ItemDisplayParameters GetItemDisplayParameters(this ViewDataDictionary viewData,
+            string? itemId, string? containerId = null)
+        {
+            if (itemId == null)
+                throw new ArgumentNullException(nameof(itemId));
+
+            if (viewData.TryGetValue(itemId, out object obj))
+            {
+                if (obj != null && obj is ItemDisplayParameters d)
+                    return d;
+            }
+
+            if (containerId == null)
+                throw new ArgumentNullException(nameof(containerId));
+
+            ListDisplayParameters listDisplayParameters = viewData.GetListDisplayParameters(containerId);
+
+            var itemDisplayParameters = new ItemDisplayParameters(containerId, itemId, listDisplayParameters);
+
+            viewData[Constants.AdditionalViewData] = listDisplayParameters.AdditionalViewData;
+            viewData[Constants.ListDisplayParameters] = listDisplayParameters;
+            viewData[Constants.ItemDisplayParameters] = itemDisplayParameters;
+            viewData[Constants.CurrentContainerId] = containerId;
+            viewData[Constants.CurrentIndex] = itemId;
+
+            viewData[itemId] = itemDisplayParameters;
+            return itemDisplayParameters;
+        }
     }
 }

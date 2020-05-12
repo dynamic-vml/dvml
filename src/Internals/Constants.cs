@@ -117,7 +117,9 @@ namespace DynamicVML.Internals
         ///   objects for the current view.
         /// </summary>
         /// 
-        public const string ItemCreatorParameters = "DynamicList_ItemCreatorParameters";
+        public const string ItemCreateParameters = "DynamicList_ItemCreateParameters";
+
+
 
         internal const string EditorTemplates = "EditorTemplates/";
         internal const string DisplayTemplates = "DisplayTemplates/";

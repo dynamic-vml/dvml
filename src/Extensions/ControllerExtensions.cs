@@ -3,12 +3,9 @@
 // cesarsouza@gmail.com - http://crsouza.com
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DynamicVML.Internals;
-using DynamicVML.Extensions;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -84,6 +81,64 @@ namespace DynamicVML.Extensions
         }
 
         /// <summary>
+        ///    Renders a partial view containing the item to be in plain HTML,
+        ///    and converts it to JSON so it can be sent back to the client. You should
+        ///    only use this method when using <see cref="NewItemMethod.Post"/>.
+        /// </summary>
+        /// 
+        /// <typeparam name="TViewModel">The type of the view model whose view should be rendered.</typeparam>
+        /// 
+        /// <param name="controller">The controller handling the action for creating the new item.</param>
+        /// <param name="viewModel">The view model whose view should be rendered.</param>
+        /// <param name="parameters">The <see cref="AddNewDynamicItem"/> received by the controller.</param>
+        /// <param name="options">An action that allows for configuring the options to be associated 
+        ///     with the new item before it gets inserted to the list.</param>
+        /// 
+        /// <returns>An <see cref="ActionResult"/> to be sent back to the client.</returns>
+        /// 
+        public static ActionResult PartialView<TViewModel>(this Controller controller,
+            TViewModel viewModel, AddNewDynamicItem parameters, Action<DynamicListItem<TViewModel>> options)
+            where TViewModel : class
+        {
+            if (parameters.ContainerId == null)
+                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
+            var o = new DynamicListItem<TViewModel>();
+            options(o);
+            var item = viewModel.ToDynamicList(parameters.ContainerId, o);
+            return PartialView(controller, (IDynamicList)item, parameters);
+        }
+
+        /// <summary>
+        ///    Renders a partial view containing the item to be in plain HTML,
+        ///    and converts it to JSON so it can be sent back to the client. You should
+        ///    only use this method when using <see cref="NewItemMethod.Post"/>.
+        /// </summary>
+        /// 
+        /// <typeparam name="TViewModel">The type of the view model whose view should be rendered.</typeparam>
+        /// <typeparam name="TOptions">The options associated with the view model.</typeparam>
+        /// 
+        /// <param name="controller">The controller handling the action for creating the new item.</param>
+        /// <param name="viewModel">The view model whose view should be rendered.</param>
+        /// <param name="parameters">The <see cref="AddNewDynamicItem"/> received by the controller.</param>
+        /// <param name="options">An action that allows for configuring the options to be associated 
+        ///     with the new item before it gets inserted to the list.</param>
+        /// 
+        /// <returns>An <see cref="ActionResult"/> to be sent back to the client.</returns>
+        /// 
+        public static ActionResult PartialView<TViewModel, TOptions>(this Controller controller,
+            TViewModel viewModel, AddNewDynamicItem parameters, Action<TOptions> options)
+            where TViewModel : class
+            where TOptions : DynamicListItem<TViewModel>, new()
+        {
+            if (parameters.ContainerId == null)
+                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
+            TOptions o = new TOptions();
+            options(o);
+            var item = viewModel.ToDynamicList(parameters.ContainerId, o);
+            return PartialView(controller, (IDynamicList)item, parameters);
+        }
+
+        /// <summary>
         ///    Creates the partial view for the item that should be sent back to the client.
         /// </summary>
         /// 
@@ -119,7 +174,7 @@ namespace DynamicVML.Extensions
            IDynamicList item, AddNewDynamicItem parameters)
         {
             PartialViewResult partialView = controller.PartialView(parameters.ListTemplate, item);
-            partialView.ViewData.SetItemEditorParameters(item.Index, parameters, NewItemMethod.Get);
+            partialView.ViewData.GetItemEditorParameters(item.Index, parameters, NewItemMethod.Get);
             return partialView;
         }
 
@@ -158,7 +213,7 @@ namespace DynamicVML.Extensions
                 );
 
                 viewContext.ViewData.Model = item;
-                viewContext.ViewData.SetItemEditorParameters(item.Index, parameters, NewItemMethod.Post);
+                viewContext.ViewData.GetItemEditorParameters(item.Index, parameters, NewItemMethod.Post);
 
                 await viewResult.View.RenderAsync(viewContext);
                 string html = writer.GetStringBuilder().ToString();

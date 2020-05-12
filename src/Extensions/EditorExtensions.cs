@@ -39,11 +39,10 @@ namespace DynamicVML.Extensions
             html.ViewData[Constants.DisplayOptions] = viewDataObject.DisplayOptions;
             html.ViewData[Constants.EditorOptions] = viewDataObject.EditorOptions;
 
-            // register options for the current container
+            // Register the display/editor options _specifically_ for the current container. If we do not 
+            // do like this, nesting containers with different types will not work because this object would 
+            // get overwritten when we try to display children containers.
             html.ViewData[list.ContainerId] = viewDataObject;
-
-            // if we do not do like this, nesting containers with different types will not work 
-            // because this object would get overwritten when we try to display children containers
         }
 
         private static TValue GetDynamicListFromModel<TModel, TValue>(this IHtmlHelper<TModel> html, 
@@ -51,6 +50,7 @@ namespace DynamicVML.Extensions
             where TValue : IDynamicList
         {
             TValue list = propertyExpression.Compile()(html.ViewData.Model);
+
             if (list == null)
             {
                 throw new ArgumentException($"The {nameof(IDynamicList)} at Model.{propertyExpression} cannot be null.",

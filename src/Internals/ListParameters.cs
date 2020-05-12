@@ -6,23 +6,27 @@ using DynamicVML.Options;
 
 namespace DynamicVML.Internals
 {
-    
+    /// <summary>
+    ///   Represents a collection of read-only parameter values that are being used to
+    ///   currently render the list. Those cannot be changed after rendering has started.
+    /// </summary>
+    /// 
     public class ListParameters : Parameters
     {
         /// <summary>
-        ///   Gets the actual <see cref="DynamicListDisplayOptions.ItemTemplate"/> being used.
+        ///   Gets the actual <see cref="DynamicListOptions.ItemTemplate"/> being used.
         /// </summary>
         /// 
         public string ItemTemplate { get; }
 
         /// <summary>
-        ///   Gets the actual <see cref="DynamicListDisplayOptions.ItemContainerTemplate"/> being used.
+        ///   Gets the actual <see cref="DynamicListOptions.ItemContainerTemplate"/> being used.
         /// </summary>
         /// 
         public string ItemContainerTemplate { get; }
 
         /// <summary>
-        ///   Gets the actual <see cref="DynamicListDisplayOptions.ListTemplate"/> being used.
+        ///   Gets the actual <see cref="DynamicListOptions.ListTemplate"/> being used.
         /// </summary>
         /// 
         public string ListTemplate { get; }

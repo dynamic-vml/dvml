@@ -7,6 +7,7 @@ namespace DynamicVML.Internals
     /// <summary>
     ///   Base class for <see cref="ListParameters"/> and <see cref="ItemParameters"/>.
     /// </summary>
+    /// 
     public abstract class Parameters
     {
         /// <summary>

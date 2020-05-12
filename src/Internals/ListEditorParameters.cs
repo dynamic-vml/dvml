@@ -35,14 +35,13 @@ namespace DynamicVML.Internals
         public NewItemMethod Method { get; }
 
         /// <summary>
-        ///   Creates a new <see cref="AddNewDynamicItem"/> object based on
-        ///   the information stored in this instance and the provided
-        ///   <see paramref="containerId"/>.
+        ///   Creates a new <see cref="AddNewDynamicItem"/> object 
+        ///   based on the information stored in this instance.
         /// </summary>
         /// 
         /// <returns>A new <see cref="AddNewDynamicItem"/> object.</returns>
         /// 
-        public AddNewDynamicItem CreateNewItemParams()
+        public AddNewDynamicItem GetItemCreateParameters()
         {
             return new AddNewDynamicItem(List.ContainerId,
                 listTemplate: List.ListTemplate,
@@ -65,12 +64,12 @@ namespace DynamicVML.Internals
         /// 
         /// <returns>A string containing instructions on how to call the controller using Ajax.</returns>
         /// 
-        public string GetActionContent()
+        public string GetActionInfo()
         {
             if (ActionUrl.Length == 0)
                 return String.Empty;
 
-            var p = CreateNewItemParams();
+            var p = GetItemCreateParameters();
 
             if (Method == NewItemMethod.Get)
             {

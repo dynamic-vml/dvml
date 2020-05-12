@@ -21,7 +21,7 @@ namespace DynamicVML
     ///   Represents the data object that the client can send to the server to request a new partial view for
     ///   a new list item using ajax. When the controller creates this new partial view, an instance of this 
     ///   class will be stored in the <see cref="ViewDataDictionary">ViewData</see> object of the views under 
-    ///   the key <see cref="Constants.ItemCreatorParameters"/>. 
+    ///   the key <see cref="Constants.ItemCreateParameters"/>. 
     /// </summary>
     /// 
     /// <remarks>
@@ -53,43 +53,46 @@ namespace DynamicVML
     /// 
     public class AddNewDynamicItem
     {
+        /// <summary>
+        ///   Gets or sets the HTML div ID for the list whose new item should be created for.
+        /// </summary>
+        /// 
         public string? ContainerId { get; set; }
 
         /// <summary>
-        ///   Gets the actual <see cref="DynamicListDisplayOptions.ItemTemplate"/> being used.
+        ///   Gets or sets the <see cref="ListParameters.ItemTemplate"/> to be used when creating the new item.
         /// </summary>
         /// 
         public string? ItemTemplate { get; set; }
 
         /// <summary>
-        ///   Gets the actual <see cref="DynamicListDisplayOptions.ItemContainerTemplate"/> being used.
+        ///   Gets or sets the <see cref="ListParameters.ItemContainerTemplate"/> to be used when creating the new item.
         /// </summary>
         /// 
         public string? ItemContainerTemplate { get; set; }
 
         /// <summary>
-        ///   Gets the actual <see cref="DynamicListDisplayOptions.ListTemplate"/> being used.
+        ///   Gets or sets the <see cref="ListParameters.ListTemplate"/> to be used when creating the new item.
         /// </summary>
         /// 
         public string? ListTemplate { get; set; }
 
         /// <summary>
-        ///   Gets the actual HTML prefix being used for the forms.
+        ///   Gets or sets the HTML prefix to be used when creating the new item.
         /// </summary>
         /// 
         public string? Prefix { get; set; }
 
         /// <summary>
-        ///   Gets the actual <see cref="ListRenderMode"/> being used.
+        ///   Gets or sets the <see cref="ListRenderMode"/> to be used when creating the new item.
         /// </summary>
         /// 
         public ListRenderMode Mode { get; set; }
 
         /// <summary>
-        ///   Gets any additional view data which may have been passed by the user
-        ///   when calling the <see cref="EditorExtensions.ListEditorFor">
-        ///   Html.ListEditorFor</see> extension method, represented by a UTF-8 byte 
-        ///   array that can be serialized to JSON and posted back to the server.
+        ///   Gets or sets any additional view data which may have been passed by the user when calling the 
+        ///   <see cref="EditorExtensions.ListEditorFor">Html.ListEditorFor</see> extension method, represented 
+        ///   by an UTF-8 byte array that can be serialized to JSON and posted back to the server.
         /// </summary>
         /// 
         public byte[]? AdditionalViewData { get; set; }
@@ -162,8 +165,8 @@ namespace DynamicVML
         }
 
         /// <summary>
-        ///   Gets the additional view data at <see cref="AdditionalViewData"/>
-        ///   as a <see cref="Dictionary{TKey, TValue}">Dictionary{string, string}</see>
+        ///   Gets the additional view data at <see cref="AdditionalViewData"/> as a 
+        ///   <see cref="Dictionary{TKey, TValue}">Dictionary{string, string}</see>
         ///   containing the key-value pairs in the <see cref="AdditionalViewData"/>.
         /// </summary>
         /// 

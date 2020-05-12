@@ -60,7 +60,7 @@ namespace DynamicVML.Extensions
             return userData;
         }
 
-        public static void Append(this ViewDataDictionary viewData, object obj)
+        private static void Append(this ViewDataDictionary viewData, object obj)
         {
             foreach (var propertyInfo in obj.GetType().GetProperties())
             {
@@ -69,7 +69,7 @@ namespace DynamicVML.Extensions
             }
         }
 
-        public static string GetViewModelTypeName(this ViewDataDictionary viewData)
+        private static string GetViewModelTypeName(this ViewDataDictionary viewData)
         {
             var modelType = viewData.Model.GetType();
             var interfaces = modelType.GetInterfaces();
