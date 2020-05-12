@@ -16,12 +16,6 @@
         var container = $('#' + containerId);
         var requestOptions = null;
 
-        var onSuccess = function (response) {
-            if (response.success) {
-                container.append(response.html);
-            }
-        };
-
         if (actionUrl.startsWith("POST")) {
             // We will make an ajax request via POST
             var actionSettings = actionUrl.split("|");
@@ -33,7 +27,11 @@
                 dataType: "json",
                 type: "POST",
                 cache: false,
-                success: onSuccess
+                success: function (response) {
+                    if (response.success) {
+                        container.append(response.html);
+                    }
+                }
             }
         }
         else {
@@ -42,17 +40,19 @@
                 url: actionUrl,
                 type: "GET",
                 cache: false,
-                success: onSuccess
+                success: function (response) {
+                    container.append(response);
+                }
             }
         }
 
         // Perform the request
-        $.ajax(requestOptions); 
+        $.ajax(requestOptions);
 
         return {
             container: container[0], // return information about the request
             options: requestOptions  // to enable better testing / debugging.
-        };  
+        };
     };
 
     function remove(itemId) {

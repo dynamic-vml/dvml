@@ -1,0 +1,14 @@
+﻿@model Tests.SimpleList
+@using DynamicVML.Extensions
+
+<div>
+    @Html.DisplayNameFor(model => model.ParentProperty)
+    @Html.EditorFor(model => model.ParentProperty)
+    @Html.ListEditorFor(model => model.Items,
+        method: DynamicVML.NewItemMethod.Post,
+        actionUrl: "AddSimpleItemByPost",
+        additionalViewData: new
+        {
+            Data = "myData"
+        })
+</div>

@@ -1,19 +1,23 @@
 ﻿using System;
+using System.Threading.Tasks;
 using DynamicVML;
 using DynamicVML.Extensions;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
 
 namespace Tests
 {
     public class HomeController : Controller
     {
-        ILogger<HomeController> logger;
+        readonly ILogger<HomeController> logger;
+        readonly ICompositeViewEngine engine;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICompositeViewEngine engine)
         {
             this.logger = logger;
+            this.engine = engine;
         }
 
         public IActionResult Index()
@@ -151,6 +155,41 @@ namespace Tests
             try
             {
                 return View("EditSimple", vm);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken(Order = 2000)]
+        public async Task<IActionResult> AddSimpleItemByPost([FromBody] AddNewDynamicItem parameters)
+        {
+            var vm = new SimpleItem(99);
+
+            try
+            {
+                return await this.PartialViewAsync(engine, vm, parameters, options =>
+                {
+                    options.Index = "N";
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, ex.Message);
+                throw;
+            }
+        }
+
+        public IActionResult EditSimpleWithLayoutByPost()
+        {
+            var vm = new SimpleList(1);
+
+            try
+            {
+                return View("EditSimpleByPost", vm);
             }
             catch (Exception ex)
             {

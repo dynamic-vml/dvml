@@ -47,11 +47,68 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
-            if (parameters.ContainerId == null)
-                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
-            var item = viewModel.ToDynamicList(parameters.ContainerId, options);
-            return await PartialViewAsync(controller, engine, (IDynamicList)item, parameters);
+            CheckPostParametersAndThrow(parameters);
+            var item = viewModel.ToDynamicList(parameters.ContainerId!, options);
+            return await PartialViewAsync(controller, engine, item, parameters);
         }
+
+        /// <summary>
+        ///    Renders a partial view containing the item to be in plain HTML,
+        ///    and converts it to JSON so it can be sent back to the client. You should
+        ///    only use this method when using <see cref="NewItemMethod.Post"/>.
+        /// </summary>
+        /// 
+        /// <typeparam name="TViewModel">The type of the view model whose view should be rendered.</typeparam>
+        /// 
+        /// <param name="controller">The controller handling the action for creating the new item.</param>
+        /// <param name="engine">An instance of the <see cref="ICompositeViewEngine"/> class (which 
+        ///   can be obtained using dependency injection by asking it as a new parameter in your 
+        ///   controllers' constructor)</param>
+        /// <param name="viewModel">The view model whose view should be rendered.</param>
+        /// <param name="parameters">The <see cref="AddNewDynamicItem"/> received by the controller.</param>
+        /// <param name="options">Any additional options you might want to specify for this item.</param>
+        /// 
+        /// <returns>An <see cref="ActionResult"/> to be sent back to the client.</returns>
+        /// 
+        public async static Task<ActionResult> PartialViewAsync<TViewModel>(this Controller controller,
+            ICompositeViewEngine engine, TViewModel viewModel, AddNewDynamicItem parameters,
+            Action<DynamicListItem<TViewModel>> options)
+            where TViewModel : class
+        {
+            return await PartialViewAsync<TViewModel, DynamicListItem<TViewModel>>(
+                controller, engine, viewModel, parameters, options);
+        }
+
+        /// <summary>
+        ///    Renders a partial view containing the item to be in plain HTML,
+        ///    and converts it to JSON so it can be sent back to the client. You should
+        ///    only use this method when using <see cref="NewItemMethod.Post"/>.
+        /// </summary>
+        /// 
+        /// <typeparam name="TViewModel">The type of the view model whose view should be rendered.</typeparam>
+        /// <typeparam name="TOptions">The options associated with the view model.</typeparam>
+        /// 
+        /// <param name="controller">The controller handling the action for creating the new item.</param>
+        /// <param name="engine">An instance of the <see cref="ICompositeViewEngine"/> class (which 
+        ///   can be obtained using dependency injection by asking it as a new parameter in your 
+        ///   controllers' constructor)</param>
+        /// <param name="viewModel">The view model whose view should be rendered.</param>
+        /// <param name="parameters">The <see cref="AddNewDynamicItem"/> received by the controller.</param>
+        /// <param name="options">Any additional options you might want to specify for this item.</param>
+        /// 
+        /// <returns>An <see cref="ActionResult"/> to be sent back to the client.</returns>
+        /// 
+        public async static Task<ActionResult> PartialViewAsync<TViewModel, TOptions>(this Controller controller,
+            ICompositeViewEngine engine, TViewModel viewModel, AddNewDynamicItem parameters, Action<TOptions> options)
+            where TViewModel : class
+            where TOptions : DynamicListItem<TViewModel>, new()
+        {
+            CheckPostParametersAndThrow(parameters);
+            var item = CreateItem(viewModel, parameters, options);
+            return await PartialViewAsync(controller, engine, item, parameters);
+        }
+
+
 
         /// <summary>
         ///    Renders a partial view containing the item to be in plain HTML,
@@ -74,9 +131,8 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
-            if (parameters.ContainerId == null)
-                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
-            var item = viewModel.ToDynamicList(parameters.ContainerId, options);
+            CheckGetParametersAndThrow(parameters);
+            var item = viewModel.ToDynamicList(parameters.ContainerId!, options);
             return PartialView(controller, (IDynamicList)item, parameters);
         }
 
@@ -100,12 +156,7 @@ namespace DynamicVML.Extensions
             TViewModel viewModel, AddNewDynamicItem parameters, Action<DynamicListItem<TViewModel>> options)
             where TViewModel : class
         {
-            if (parameters.ContainerId == null)
-                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
-            var o = new DynamicListItem<TViewModel>();
-            options(o);
-            var item = viewModel.ToDynamicList(parameters.ContainerId, o);
-            return PartialView(controller, (IDynamicList)item, parameters);
+            return PartialView<TViewModel, DynamicListItem<TViewModel>>(controller, viewModel, parameters, options);
         }
 
         /// <summary>
@@ -130,13 +181,12 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
-            if (parameters.ContainerId == null)
-                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
-            TOptions o = new TOptions();
-            options(o);
-            var item = viewModel.ToDynamicList(parameters.ContainerId, o);
-            return PartialView(controller, (IDynamicList)item, parameters);
+            CheckGetParametersAndThrow(parameters);
+            var item = CreateItem(viewModel, parameters, options);
+            return PartialView(controller, item, parameters);
         }
+
+        
 
         /// <summary>
         ///    Creates the partial view for the item that should be sent back to the client.
@@ -154,9 +204,8 @@ namespace DynamicVML.Extensions
             TViewModel viewModel, AddNewDynamicItem parameters)
             where TViewModel : class
         {
-            if (parameters.ContainerId == null)
-                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
-            var item = viewModel.ToDynamicList(parameters.ContainerId);
+            CheckGetParametersAndThrow(parameters);
+            var item = viewModel.ToDynamicList(parameters.ContainerId!);
             return PartialView(controller, (IDynamicList)item, parameters);
         }
 
@@ -173,6 +222,7 @@ namespace DynamicVML.Extensions
         public static ActionResult PartialView(this Controller controller,
            IDynamicList item, AddNewDynamicItem parameters)
         {
+            CheckGetParametersAndThrow(parameters);
             PartialViewResult partialView = controller.PartialView(parameters.ListTemplate, item);
             partialView.ViewData.GetItemEditorParameters(item.Index, parameters, NewItemMethod.Get);
             return partialView;
@@ -193,10 +243,12 @@ namespace DynamicVML.Extensions
         /// 
         /// <returns>An <see cref="ActionResult"/> to be sent back to the client.</returns>
         /// 
-        internal static async Task<ActionResult> PartialViewAsync(this Controller controller,
+        public static async Task<ActionResult> PartialViewAsync(this Controller controller,
             ICompositeViewEngine engine, IDynamicList item, AddNewDynamicItem parameters)
         {
-            // Notes: based on https://stackoverflow.com/a/31906578/262032
+            // Notes: This method is based on https://stackoverflow.com/a/31906578/262032
+
+            CheckPostParametersAndThrow(parameters);
 
             ViewEngineResult viewResult = engine
                 .FindView(controller.ControllerContext, parameters.ListTemplate, false);
@@ -228,5 +280,33 @@ namespace DynamicVML.Extensions
 
 
 
+        private static IDynamicList CreateItem<TViewModel, TOptions>(TViewModel viewModel, 
+            AddNewDynamicItem parameters, Action<TOptions> options)
+            where TViewModel : class
+            where TOptions : DynamicListItem<TViewModel>, new()
+        {
+            TOptions o = new TOptions();
+            options(o);
+            var item = viewModel.ToDynamicList(parameters.ContainerId!, o);
+            return item;
+        }
+
+        private static void CheckPostParametersAndThrow(AddNewDynamicItem parameters)
+        {
+            if (parameters.ContainerId == null)
+            {
+                throw new ArgumentException("The received new item parameters did not contain a valid " +
+                    "containerId. Have you forgotten to add the \"[FromBody]\" attribute to the 'AddNewDynamicItem' " +
+                    "parameter in your [HttpPost] controller action?\"", nameof(parameters));
+            }
+        }
+
+        private static void CheckGetParametersAndThrow(AddNewDynamicItem parameters)
+        {
+            if (parameters.ContainerId == null)
+            {
+                throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
+            }
+        }
     }
 }
