@@ -3,7 +3,7 @@
 // cesarsouza@gmail.com - http://crsouza.com
 
 using System;
-
+using System.Linq;
 using DynamicVML.Extensions;
 using DynamicVML.Options;
 
@@ -74,7 +74,9 @@ namespace DynamicVML.Internals
             if (Method == NewItemMethod.Get)
             {
                 string queryString = p.ToQueryString();
-                return $"{ActionUrl}/{queryString}";
+                if (ActionUrl.Split('/').Last().Contains('?'))
+                    return $"{ActionUrl}&{queryString}";
+                return $"{ActionUrl}/?{queryString}";
             }
 
             if (Method == NewItemMethod.Post)

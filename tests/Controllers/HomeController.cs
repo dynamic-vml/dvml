@@ -198,6 +198,30 @@ namespace Tests
             }
         }
 
+
+
+        // Tests with action parameters
+        public IActionResult AddBookWithParameterByGet(AddNewDynamicItem parameters, int integerParameter, string stringParameter)
+        {
+            var newBookViewModel = new BookViewModel()
+            {
+                Title = $"New book via GET with parameters: {integerParameter} {stringParameter}"
+            };
+
+            return this.PartialView(newBookViewModel, parameters);
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken(Order = 2000)]
+        public IActionResult AddBookWithParameterByPost([FromBody] AddNewDynamicItem parameters, int integerParameter, string stringParameter)
+        {
+            var newBookViewModel = new BookViewModel()
+            {
+                Title = $"New book via POST with parameters: {integerParameter} {stringParameter}"
+            };
+
+            return this.PartialView(newBookViewModel, parameters);
+        }
         #endregion
     }
 }

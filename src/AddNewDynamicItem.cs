@@ -3,17 +3,17 @@
 // cesarsouza@gmail.com - http://crsouza.com
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.Json;
+using System.Web;
 
 using DynamicVML.Extensions;
 using DynamicVML.Internals;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc;
-using System.Web;
-using System.Collections.Generic;
 
 namespace DynamicVML
 {
@@ -140,12 +140,12 @@ namespace DynamicVML
             {
                 Trace.TraceWarning("DynamicVM: Additional view data cannot be sent over GET, so the data present" +
                     $"in {nameof(AddNewDynamicItem)} will be ignored. If you do not want this behavior, please " +
-                    $"add 'method: POST' as an argument to the 'Html.EditorFor()' method.");
+                    $"add 'method: POST' as an argument to the 'Html.ListEditorFor()' method.");
                 // let's just warn once, otherwise the log will be filled with messages
                 DisableTraceWarningsForQueryStringsThatContainAdditionalViewData = true;
             }
 
-            return $"?{nameof(ContainerId)}={ContainerId}"
+            return $"{nameof(ContainerId)}={ContainerId}"
                 + $"&{nameof(ListTemplate)}={HttpUtility.UrlEncode(ListTemplate)}"
                 + $"&{nameof(ItemContainerTemplate)}={HttpUtility.UrlEncode(ItemContainerTemplate)}"
                 + $"&{nameof(ItemTemplate)}={HttpUtility.UrlEncode(ItemTemplate)}"
