@@ -37,7 +37,7 @@ in your project:
 After adding the package, you just have to perform four steps to get it running:
 
 ### 1. Add script references
-Add a reference to `~/lib/dynamic-viewmodel-list/dvml.js` to your view, e.g., either by adding
+Add a reference to `~/lib/dynamic-viewmodel-list/dvml.js` to your view, *e.g.*, either by adding
 it to your `_Layout.cshtml` file or to the `Scripts` section usually located at the bottom of 
 your `Create`, `Edit`, `Details`,  and/or `Delete.cshtml` view files:
 
@@ -117,7 +117,7 @@ you might have in your project. For example, a common approach for reuse would b
 "Address.cshtml" view that could render an `AddressViewModel` in different sections of your application.
 
 With this assumption in mind, it would have been a lot of trouble if you had to create separate
-views for each common kind of list items you would like to add to your project, e.g., lists for `PhoneViewModel`s,
+views for each common kind of list items you would like to add to your project, *e.g.*, lists for `PhoneViewModel`s,
 `AddressViewModel`s and so on.
 That is why, using this library, you can specify which template view you would like to use for each part
 of the list directly when creating your view. For instance, let's say you would like to render a list of
@@ -149,6 +149,26 @@ The library assumes dynamic lists are composed of four main (fully customizable)
 - Regions that contain the list items (*which the library refers to as DynamicItemContainers*)
 - The list items (*which are your already existing views*)
 
+You can specify templates for each of those regions using:
+
+```cs
+@Html.DisplayListFor(x => x.Books,
+    itemTemplate: "BookViewModel",
+    itemContainerTemplate: "MyItemContainerTemplate"
+    listTemplate:  "MyListTemplate"
+    listContainerTemplate: "MyListContainerTemplate")
+```
+or
+
+```cs
+@Html.ListEditorFor(x => x.Books,
+    itemTemplate: "BookViewModel",
+    itemContainerTemplate: "MyItemContainerTemplate"
+    listTemplate:  "MyListTemplate"
+    listContainerTemplate: "MyListContainerTemplate")
+```
+
+A default template will be used for regions that have not been specified. 
 The meaning of each region is shown in the figure below:
 
 ![The four regions of a dynamic list](images/templates.png "The four regions of a dynamic list")
@@ -164,9 +184,9 @@ for .cshtml files in your application that have the same name as the default tem
 
 ### Custom reusable options
 
-Now, a common task is to be able to customize each of the item containers with some buttons (e.g. to
+Now, a common task is to be able to customize each of the item containers with some buttons (*e.g.* to
 remove the item, collapse the item, or display extra information about what the user is entering).
-Furthermore, you may want only some items to be removable, but not all of them (e.g. the first
+Furthermore, you may want only some items to be removable, but not all of them (*e.g.* the first
 address in a list of addresses could be mandatory and non-removable).
 
 Instead of having to add each of those options to your ViewModels and thus maybe having multiple
@@ -192,7 +212,7 @@ public IActionResult AddBook(AddNewDynamicItem parameters)
 ```
 
 The `MyOptions<T>` can be considered a separate view model on its own, that you can customize 
-yourself, adding any options you may want, e.g.:
+yourself, adding any options you may want, *e.g.*:
 
 ```cs
 public class MyOptions<T> : DynamicListItemOptions<T>, IMyOptions
@@ -270,10 +290,47 @@ since the additional data may be too long to be included in a GET query string.
 
 >[!WARNING]
 While the library supports this scenario, it may not be advisable to actually make use of this
-since there may be other cleaner ways to pass user data to your views, e.g. with proper properties
+since there may be other cleaner ways to pass user data to your views, *e.g.* with proper properties
 in your view models. A malicious user could also tamper with the stored data and let the form
 submit altered data to your server. However, again, if you **really** need this functionality and
 understand the risks, the library will also let you do so.
+
+
+### Passing custom *action parameters* to your *controller*
+
+Please note that you are not restricted to have only the `AddNewDynamicItem` as the single
+parameter in your controller actions. If desired, you can include further parameters. For
+example, consider the case where we would like to pass extra string and integer parameters:
+
+```cs
+public IActionResult AddBook(AddNewDynamicItem parameters, string parameter1, int parameter2)
+{
+    var newBookViewModel = new BookViewModel()
+    {
+        Title = $"New book with parameter values {parameter1} and {parameter2}"
+    };
+           
+    return this.PartialView(newBookViewModel, parameters);
+}
+```
+
+In this case, we should be able to call our parameterized controller action from our view using:
+
+```cs
+@Html.ListEditorFor(x => x.Books,
+    action: Url.Action("AddBook", "BooksControllerName", new {
+        parameter1: "some text",
+        parameter2: 42,
+    }), 
+    addNewItemText: "Add new book",
+```
+
+And the above should work both by both GET and POST.
+
+>[!Note]
+Because the additional action parameters are encoded in the query string (even when using POST), 
+you may only be able to pass *strings*, primitive types (*e.g.*, *int*, *bool*, *double*, *float*),
+and other simple parameters that can be converted to and from strings (*e.g.*, *TimeSpan*, *DateTime*, *Guid*).
 
 
 
@@ -291,11 +348,26 @@ understand the risks, the library will also let you do so.
 ### StackOverflow questions this library should address:
 
  - https://stackoverflow.com/questions/14038392/editorfor-ienumerablet-with-templatename
+ - https://stackoverflow.com/questions/25333332/correct-idiomatic-way-to-use-custom-editor-templates-with-ienumerable-models-in
  - https://stackoverflow.com/questions/36171865/dynamic-partial-view-list-not-being-picked-up-when-saving
  - https://stackoverflow.com/questions/52305337/how-do-i-use-the-editorformany-html-helper-in-net-core
  - https://stackoverflow.com/questions/42116800/editorformany-not-working-for-objects-deeper-than-1-level
  - https://stackoverflow.com/questions/29324837/add-related-entities-with-asp-net-mvc-and-razor
  - https://stackoverflow.com/questions/9915612/how-can-i-add-rows-to-a-collection-list-in-my-model
+
+
+
+ # Unrelated links
+
+ I have recently created another library for ASP.NET called [**System.Enums.FontAwesome (sefa)**](https://github.com/cesarsouza/sefa/).
+ It provides strongly-typed enumerations that can be used to list icons from https://fontawesome.com/. Enumeration members are marked 
+ with DisplayAttributes to make them suitable for being bound to user controls such as selectlists and comboboxes.
+
+ Other of my projects include:
+
+  - [Accord.NET](http://accord-framework.net/) - one of the earliest and most complete machine learning libraries for .NET/C#.
+  - [Statistics Workbench](https://www.codeproject.com/Articles/835786/Statistics-Workbench) - a tool to help teaching introductory classes on statistics, made in WPF.
+  - [Procedural Human Action Videos](http://adas.cvc.uab.es/phav/) - a dataset for learning computer vision models using procedural generation.
 
 
 
