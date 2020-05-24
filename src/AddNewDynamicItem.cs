@@ -138,7 +138,7 @@ namespace DynamicVML
         {
             if (!DisableTraceWarningsForQueryStringsThatContainAdditionalViewData && AdditionalViewData != null)
             {
-                Trace.TraceWarning("DynamicVM: Additional view data cannot be sent over GET, so the data present" +
+                Trace.TraceWarning("DynamicVM: Additional view data cannot be sent over GET, so the data present " +
                     $"in {nameof(AddNewDynamicItem)} will be ignored. If you do not want this behavior, please " +
                     $"add 'method: POST' as an argument to the 'Html.ListEditorFor()' method.");
                 // let's just warn once, otherwise the log will be filled with messages

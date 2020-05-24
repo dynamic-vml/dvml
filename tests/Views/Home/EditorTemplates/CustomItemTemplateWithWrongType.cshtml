@@ -1,0 +1,19 @@
+﻿@using DynamicVML.Extensions
+@model Tests.ViewModels.IWrongOptions
+
+@{
+    string extraData = ViewData["extraData"] as string;
+}
+
+<div class="card mt-2">
+    <div class="card-header container-fluid">
+        <div class="row">
+            <div class="col-10">
+                <div class="card-title">@Model.WrongText with extra data: @extraData</div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        @Html.RenderDynamicItemEditor()
+    </div>
+</div>

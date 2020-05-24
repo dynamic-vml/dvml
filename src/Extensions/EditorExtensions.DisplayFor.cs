@@ -67,15 +67,17 @@ namespace DynamicVML.Extensions
             ListRenderMode mode = Constants.DefaultRenderMode)
             where TValue : IDynamicList
         {
+            var displayOptions = new DynamicListDisplayOptions()
+            {
+                ItemTemplate = itemTemplate,
+                ItemContainerTemplate = itemContainerTemplate,
+                ListTemplate = listTemplate,
+                Mode = mode
+            };
+
             PackViewData(html, propertyExpression, new ViewDataObject
             {
-                DisplayOptions = new DynamicListDisplayOptions()
-                {
-                    ItemTemplate = itemTemplate,
-                    ItemContainerTemplate = itemContainerTemplate,
-                    ListTemplate = listTemplate,
-                    Mode = mode
-                },
+                DisplayOptions = displayOptions,
                 AdditionalViewData = additionalViewData
             });
 
@@ -89,7 +91,13 @@ namespace DynamicVML.Extensions
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                throw;
+                throw new DynamicListException($"Error rendering list container template '{listContainerTemplate}' when calling " +
+                    $"{nameof(EditorExtensions.DisplayListFor)}. Check the inner exception and other properties of this " +
+                    $"exception for details. Message: {ex.Message}", ex)
+                {
+                    DisplayOptions = displayOptions,
+                    AdditionalViewData = additionalViewData
+                };
             }
         }
 
@@ -130,7 +138,11 @@ namespace DynamicVML.Extensions
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                throw;
+                throw new DynamicListException($"Error rendering list template '{param.List.ListTemplate}' for display. Check " +
+                    $"the inner exception and other properties of this exception for details. Message: {ex.Message}", ex)
+                {
+                    DisplayParameters = param
+                };
             }
         }
 
@@ -163,7 +175,11 @@ namespace DynamicVML.Extensions
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                throw;
+                throw new DynamicListException($"Error rendering item container template '{param.Display.List.ItemContainerTemplate}' " +
+                    $"for display. Check the inner exception and other properties of this exception for details. Message: {ex.Message}", ex)
+                {
+                    ItemDisplayParameters = param
+                };
             }
         }
 
@@ -187,18 +203,22 @@ namespace DynamicVML.Extensions
         {
             ItemDisplayParameters param = html.ViewData.GetItemDisplayParameters(html.ViewData.Model.Index);
 
+            string templateName = String.Empty;
+
             try
             {
                 if (param.Display.List.Mode == ListRenderMode.ViewModelOnly)
                 {
+                    templateName = param.Display.List.ItemTemplate;
                     return html.DisplayFor(expression: x => x.ViewModel,
-                        templateName: param.Display.List.ItemTemplate); // e.g. ItemTemplate: "Book"
+                        templateName: templateName); // e.g. ItemTemplate: "Book"
                 }
 
                 if (param.Display.List.Mode == ListRenderMode.ViewModelWithOptions)
                 {
+                    templateName = Constants.DisplayTemplates + param.Display.List.ItemTemplate;
                     html.RenderPartial(
-                        partialViewName: Constants.DisplayTemplates + param.Display.List.ItemTemplate, // e.g. ItemTemplate: "Book"
+                        partialViewName: templateName, // e.g. ItemTemplate: "Book"
                         model: html.ViewData.Model,
                         viewData: html.ViewData);
                 }
@@ -208,7 +228,11 @@ namespace DynamicVML.Extensions
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                throw;
+                throw new DynamicListException($"Error rendering item template '{templateName}' for edit. Check the inner " +
+                    $"exception and other properties of this exception for details. Message: {ex.Message}", ex)
+                {
+                    ItemDisplayParameters = param
+                };
             }
         }
 

@@ -32,7 +32,7 @@ namespace DynamicVML.Extensions
     /// 
     public static partial class EditorExtensions
     {
-      
+
         /// <summary>
         ///   Renders a dynamic list for display. Please see the image in the
         ///   <see cref="EditorExtensions"/> remarks section to get a quick understanding of 
@@ -81,20 +81,21 @@ namespace DynamicVML.Extensions
             NewItemMethod method = NewItemMethod.Get)
             where TValue : IDynamicList
         {
+            var editorOptions = new DynamicListEditorOptions()
+            {
+                ItemTemplate = itemTemplate,
+                ItemContainerTemplate = itemContainerTemplate,
+                ListTemplate = listTemplate,
+
+                ActionUrl = actionUrl,
+                AddNewItemText = addNewItemText,
+                Mode = mode,
+                Method = method
+            };
+
             PackViewData(html, propertyExpression, new ViewDataObject
             {
-                EditorOptions = new DynamicListEditorOptions()
-                {
-                    ItemTemplate = itemTemplate,
-                    ItemContainerTemplate = itemContainerTemplate,
-                    ListTemplate = listTemplate,
-
-                    ActionUrl = actionUrl,
-                    AddNewItemText = addNewItemText,
-                    Mode = mode,
-                    Method = method
-                },
-
+                EditorOptions = editorOptions,
                 AdditionalViewData = additionalViewData
             });
 
@@ -103,13 +104,19 @@ namespace DynamicVML.Extensions
                 IHtmlContent output = html.EditorFor(
                     expression: propertyExpression,
                     templateName: listContainerTemplate); // e.g. listContainerTemplate: DynamicListContainer
-                    
+
                 return output;
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                throw ex;
+                throw new DynamicListException($"Error rendering list container template '{listContainerTemplate}' when " +
+                    $"calling {nameof(EditorExtensions.ListEditorFor)}. Check the inner exception and other properties of " +
+                    $"this exception for details. Message: {ex.Message}", ex)
+                {
+                    EditorOptions = editorOptions,
+                    AdditionalViewData = additionalViewData
+                };
             }
         }
 
@@ -140,7 +147,11 @@ namespace DynamicVML.Extensions
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                throw;
+                throw new DynamicListException($"Error rendering list template '{param.List.ListTemplate}' for edit. " +
+                    $"Check the inner exception and other properties of this exception for details. Message: {ex.Message}", ex)
+                {
+                    EditorParameters = param
+                };
             }
         }
 
@@ -169,13 +180,17 @@ namespace DynamicVML.Extensions
             {
                 IHtmlContent output = html.EditorFor(expression: x => x[itemId],
                     templateName: param.Editor.List.ItemContainerTemplate); // e.g. ItemContainerTemplate: DynamicListItemContainer
-                    
+
                 return output;
             }
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                throw;
+                throw new DynamicListException($"Error rendering item container template '{param.Editor.List.ItemContainerTemplate}' " +
+                    $"for edit. Check the inner exception and other properties of this exception for details. Message: {ex.Message}", ex)
+                {
+                    ItemEditorParameters = param
+                };
             }
         }
 
@@ -197,18 +212,21 @@ namespace DynamicVML.Extensions
         {
             ItemEditorParameters param = html.ViewData.GetItemEditorParameters(html.ViewData.Model.Index);
 
+            string templateName = String.Empty;
+
             try
             {
                 if (param.Editor.List.Mode == ListRenderMode.ViewModelOnly)
                 {
+                    templateName = param.Editor.List.ItemTemplate;
                     return html.EditorFor(expression: x => x.ViewModel,
-                        templateName: param.Editor.List.ItemTemplate); // e.g. ItemTemplate: "Book"
+                        templateName: templateName); // e.g. ItemTemplate: "Book"
                 }
 
                 if (param.Editor.List.Mode == ListRenderMode.ViewModelWithOptions)
                 {
-                    html.RenderPartial(
-                        partialViewName: Constants.EditorTemplates + param.Editor.List.ItemTemplate, // e.g. ItemTemplate: "Book"
+                    templateName = Constants.EditorTemplates + param.Editor.List.ItemTemplate;
+                    html.RenderPartial(partialViewName: templateName, // e.g. ItemTemplate: "Book"
                         model: html.ViewData.Model,
                         viewData: html.ViewData);
                 }
@@ -218,7 +236,11 @@ namespace DynamicVML.Extensions
             catch (Exception ex)
             {
                 Trace.WriteLine(ex);
-                throw;
+                throw new DynamicListException($"Error rendering item template '{templateName}' for edit. Check the " +
+                    $"inner exception and other properties of this exception for details. Message: {ex.Message}", ex)
+                {
+                    ItemEditorParameters = param
+                };
             }
         }
 

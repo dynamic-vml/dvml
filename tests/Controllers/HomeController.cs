@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using DynamicVML;
 using DynamicVML.Extensions;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Logging;
+
+using Tests.ViewModels;
 
 namespace Tests
 {
@@ -221,6 +224,35 @@ namespace Tests
             };
 
             return await this.PartialViewAsync(engine, newBookViewModel, parameters);
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken(Order = 2000)]
+        public async Task<IActionResult> AddBookWithOptionsAndParameterByPost([FromBody] AddNewDynamicItem parameters, int integerParameter, string stringParameter)
+        {
+            var newBookViewModel = new BookViewModel()
+            {
+                Title = $"New book via POST with parameters: {integerParameter} {stringParameter}"
+            };
+
+            return await this.PartialViewAsync(engine, newBookViewModel, parameters, new TestOptions<BookViewModel>()
+            {
+                TestText = "OptionsTestText"
+            });
+        }
+
+        [HttpGet]
+        public IActionResult AddBookWithOptionsAndParameterByGet(AddNewDynamicItem parameters, int integerParameter, string stringParameter)
+        {
+            var newBookViewModel = new BookViewModel()
+            {
+                Title = $"New book via GET with parameters: {integerParameter} {stringParameter}"
+            };
+
+            return this.PartialView(newBookViewModel, parameters, new TestOptions<BookViewModel>()
+            {
+                TestText = "OptionsTestText"
+            });
         }
         #endregion
     }
