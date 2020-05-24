@@ -2,8 +2,9 @@
 // Copyright (c) 2020 César Roberto de Souza. Licensed under the MIT license
 // cesarsouza@gmail.com - http://crsouza.com
 
+using System;
+
 using DynamicVML.Extensions;
-using DynamicVML.Options;
 
 namespace DynamicVML.Internals
 {
@@ -14,6 +15,7 @@ namespace DynamicVML.Internals
     ///   of the library.
     /// </summary>
     /// 
+    [Serializable]
     public class ListDisplayParameters
     {
         /// <summary>

@@ -51,6 +51,7 @@ namespace DynamicVML
     ///   by your code as it is part of the inner workings of the library.
     /// </remarks>
     /// 
+    [Serializable]
     public class AddNewDynamicItem
     {
         /// <summary>

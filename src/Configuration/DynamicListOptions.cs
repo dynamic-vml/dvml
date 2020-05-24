@@ -2,8 +2,9 @@
 // Copyright (c) 2020 César Roberto de Souza. Licensed under the MIT license
 // cesarsouza@gmail.com - http://crsouza.com
 
+using System;
+
 using DynamicVML.Extensions;
-using DynamicVML.Internals;
 
 namespace DynamicVML.Options
 {
@@ -23,6 +24,7 @@ namespace DynamicVML.Options
     /// <seealso cref="DynamicListEditorOptions"/>
     /// <seealso cref="DynamicListDisplayOptions"/>
     /// 
+    [Serializable]
     public abstract class DynamicListOptions
     {
         /// <summary>

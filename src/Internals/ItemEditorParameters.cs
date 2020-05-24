@@ -2,6 +2,8 @@
 // Copyright (c) 2020 César Roberto de Souza. Licensed under the MIT license
 // cesarsouza@gmail.com - http://crsouza.com
 
+using System;
+
 namespace DynamicVML.Internals
 {
     /// <summary>
@@ -12,6 +14,7 @@ namespace DynamicVML.Internals
     /// <seealso cref="ListEditorParameters"/>
     /// <seealso cref="ItemDisplayParameters"/>
     /// 
+    [Serializable]
     public class ItemEditorParameters : ItemParameters
     {
         /// <summary>

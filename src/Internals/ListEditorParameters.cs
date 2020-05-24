@@ -4,7 +4,7 @@
 
 using System;
 using System.Linq;
-using DynamicVML.Extensions;
+
 using DynamicVML.Options;
 
 namespace DynamicVML.Internals
@@ -14,6 +14,7 @@ namespace DynamicVML.Internals
     ///   will be stored in the ViewData object of your view under the key <see cref="Constants.ListEditorParameters"/>.
     /// </summary>
     /// 
+    [Serializable]
     public class ListEditorParameters : ListDisplayParameters
     {
         /// <summary>

@@ -2,12 +2,15 @@
 // Copyright (c) 2020 César Roberto de Souza. Licensed under the MIT license
 // cesarsouza@gmail.com - http://crsouza.com
 
+using System;
+
 namespace DynamicVML.Internals
 {
     /// <summary>
     ///   Base class for <see cref="ItemDisplayParameters"/> and <see cref="ItemEditorParameters"/>.
     /// </summary>
     /// 
+    [Serializable]
     public abstract class ItemParameters : Parameters
     {
 

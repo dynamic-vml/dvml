@@ -2,6 +2,8 @@
 // Copyright (c) 2020 César Roberto de Souza. Licensed under the MIT license
 // cesarsouza@gmail.com - http://crsouza.com
 
+using System;
+
 using DynamicVML.Options;
 
 namespace DynamicVML.Internals
@@ -11,6 +13,7 @@ namespace DynamicVML.Internals
     ///   currently render the list. Those cannot be changed after rendering has started.
     /// </summary>
     /// 
+    [Serializable]
     public class ListParameters : Parameters
     {
         /// <summary>

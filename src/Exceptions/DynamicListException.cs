@@ -3,6 +3,7 @@
 // cesarsouza@gmail.com - http://crsouza.com
 
 using System;
+
 using DynamicVML.Extensions;
 using DynamicVML.Internals;
 using DynamicVML.Options;
@@ -13,6 +14,7 @@ namespace DynamicVML
     ///   Represents a common type for exceptions thrown by the library.
     /// </summary>
     /// 
+    [Serializable]
     public class DynamicListException : Exception
     {
         /// <summary>
