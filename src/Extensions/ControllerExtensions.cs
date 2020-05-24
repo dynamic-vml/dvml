@@ -328,8 +328,8 @@ namespace DynamicVML.Extensions
 
             if (controller.Request.Method != "POST")
             {
-                throw new ApplicationException($"The item has been received via POST, but the action method is calling " +
-                    $"{nameof(PartialView)} instead of {nameof(PartialViewAsync)}. Please switch it to use {nameof(PartialViewAsync)}" +
+                throw new ApplicationException($"The item has been received via GET, but the action method is calling " +
+                    $"{nameof(PartialViewAsync)} instead of {nameof(PartialView)}. Please switch it to use {nameof(PartialView)}" +
                     $"otherwise the item will not render correctly.");
             }
         }
@@ -343,8 +343,8 @@ namespace DynamicVML.Extensions
 
             if (controller.Request.Method != "GET")
             {
-                throw new ApplicationException($"The item has been received via GET, but the action method is calling " +
-                    $"{nameof(PartialViewAsync)} instead of {nameof(PartialView)}. Please switch it to use {nameof(PartialView)}" +
+                throw new ApplicationException($"The item has been received via POST, but the action method is calling " +
+                    $"{nameof(PartialView)} instead of {nameof(PartialViewAsync)}. Please switch it to use {nameof(PartialViewAsync)}" +
                     $"otherwise the item will not render correctly.");
             }
 
