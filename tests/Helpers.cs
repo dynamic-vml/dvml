@@ -17,8 +17,23 @@ namespace Tests
 {
     public static class Helpers
     {
+        public static async Task<IHtmlDocument> GetDocumentAsync(this string content,
+           IBrowsingContext context = null)
+        {
+            if (context == null)
+                context = BrowsingContext.New();
+
+            var document = await context.OpenAsync(ResponseFactory, CancellationToken.None);
+            return (IHtmlDocument)document;
+
+            void ResponseFactory(VirtualResponse htmlResponse)
+            {
+                htmlResponse.Content(content);
+            }
+        }
+
         public static async Task<IHtmlDocument> GetDocumentAsync(this HttpResponseMessage response,
-            IBrowsingContext context = null)
+        IBrowsingContext context = null)
         {
             if (context == null)
                 context = BrowsingContext.New();

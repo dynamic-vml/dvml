@@ -8,6 +8,8 @@ using DynamicVML.Internals;
 
 using Microsoft.AspNetCore.Mvc.Testing;
 
+using Newtonsoft.Json;
+
 using Xunit;
 
 namespace Tests
@@ -158,7 +160,15 @@ namespace Tests
             var response = await client.PostAsync(parts[1],
                 new StringContent(parts[2], Encoding.UTF8, "application/json"));
 
-            var content = await Helpers.GetDocumentAsync(response);
+            var jsonResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(), new
+            {
+                success = false,
+                html = ""
+            });
+
+            Assert.True(jsonResponse.success);
+
+            var content = await Helpers.GetDocumentAsync(jsonResponse.html);
             var actual = content.ToStandardizedHtml(minified: false);
 
             // Assert

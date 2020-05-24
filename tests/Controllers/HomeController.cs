@@ -213,14 +213,14 @@ namespace Tests
 
         [HttpPost]
         [IgnoreAntiforgeryToken(Order = 2000)]
-        public IActionResult AddBookWithParameterByPost([FromBody] AddNewDynamicItem parameters, int integerParameter, string stringParameter)
+        public async Task<IActionResult> AddBookWithParameterByPost([FromBody] AddNewDynamicItem parameters, int integerParameter, string stringParameter)
         {
             var newBookViewModel = new BookViewModel()
             {
                 Title = $"New book via POST with parameters: {integerParameter} {stringParameter}"
             };
 
-            return this.PartialView(newBookViewModel, parameters);
+            return await this.PartialViewAsync(engine, newBookViewModel, parameters);
         }
         #endregion
     }

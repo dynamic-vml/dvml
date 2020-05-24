@@ -30,6 +30,32 @@ namespace DynamicVML.Extensions
         /// </summary>
         /// 
         /// <typeparam name="TViewModel">The type of the view model whose view should be rendered.</typeparam>
+        /// 
+        /// <param name="controller">The controller handling the action for creating the new item.</param>
+        /// <param name="engine">An instance of the <see cref="ICompositeViewEngine"/> class (which 
+        ///   can be obtained using dependency injection by asking it as a new parameter in your 
+        ///   controllers' constructor)</param>
+        /// <param name="viewModel">The view model whose view should be rendered.</param>
+        /// <param name="parameters">The <see cref="AddNewDynamicItem"/> received by the controller.</param>
+        /// 
+        /// <returns>An <see cref="ActionResult"/> to be sent back to the client.</returns>
+        /// 
+        public async static Task<ActionResult> PartialViewAsync<TViewModel>(this Controller controller,
+            ICompositeViewEngine engine, TViewModel viewModel, AddNewDynamicItem parameters)
+            where TViewModel : class
+        {
+            CheckPostParametersAndThrow(parameters, controller);
+            var item = viewModel.ToDynamicList(parameters.ContainerId!);
+            return await PartialViewAsync(controller, engine, (IDynamicList)item, parameters);
+        }
+
+        /// <summary>
+        ///    Renders a partial view containing the item to be in plain HTML,
+        ///    and converts it to JSON so it can be sent back to the client. You should
+        ///    only use this method when using <see cref="NewItemMethod.Post"/>.
+        /// </summary>
+        /// 
+        /// <typeparam name="TViewModel">The type of the view model whose view should be rendered.</typeparam>
         /// <typeparam name="TOptions">The options associated with the view model.</typeparam>
         /// 
         /// <param name="controller">The controller handling the action for creating the new item.</param>
@@ -47,7 +73,7 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
-            CheckPostParametersAndThrow(parameters);
+            CheckPostParametersAndThrow(parameters, controller);
             var item = viewModel.ToDynamicList(parameters.ContainerId!, options);
             return await PartialViewAsync(controller, engine, item, parameters);
         }
@@ -103,7 +129,7 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
-            CheckPostParametersAndThrow(parameters);
+            CheckPostParametersAndThrow(parameters, controller);
             var item = CreateItem(viewModel, parameters, options);
             return await PartialViewAsync(controller, engine, item, parameters);
         }
@@ -131,7 +157,7 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
-            CheckGetParametersAndThrow(parameters);
+            CheckGetParametersAndThrow(parameters, controller);
             var item = viewModel.ToDynamicList(parameters.ContainerId!, options);
             return PartialView(controller, (IDynamicList)item, parameters);
         }
@@ -181,12 +207,12 @@ namespace DynamicVML.Extensions
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
         {
-            CheckGetParametersAndThrow(parameters);
+            CheckGetParametersAndThrow(parameters, controller);
             var item = CreateItem(viewModel, parameters, options);
             return PartialView(controller, item, parameters);
         }
 
-        
+
 
         /// <summary>
         ///    Creates the partial view for the item that should be sent back to the client.
@@ -204,7 +230,7 @@ namespace DynamicVML.Extensions
             TViewModel viewModel, AddNewDynamicItem parameters)
             where TViewModel : class
         {
-            CheckGetParametersAndThrow(parameters);
+            CheckGetParametersAndThrow(parameters, controller);
             var item = viewModel.ToDynamicList(parameters.ContainerId!);
             return PartialView(controller, (IDynamicList)item, parameters);
         }
@@ -222,7 +248,7 @@ namespace DynamicVML.Extensions
         public static ActionResult PartialView(this Controller controller,
            IDynamicList item, AddNewDynamicItem parameters)
         {
-            CheckGetParametersAndThrow(parameters);
+            CheckGetParametersAndThrow(parameters, controller);
             PartialViewResult partialView = controller.PartialView(parameters.ListTemplate, item);
             partialView.ViewData.GetItemEditorParameters(item.Index, parameters, NewItemMethod.Get);
             return partialView;
@@ -248,7 +274,7 @@ namespace DynamicVML.Extensions
         {
             // Notes: This method is based on https://stackoverflow.com/a/31906578/262032
 
-            CheckPostParametersAndThrow(parameters);
+            CheckPostParametersAndThrow(parameters, controller);
 
             ViewEngineResult viewResult = engine
                 .FindView(controller.ControllerContext, parameters.ListTemplate, false);
@@ -280,7 +306,7 @@ namespace DynamicVML.Extensions
 
 
 
-        private static IDynamicList CreateItem<TViewModel, TOptions>(TViewModel viewModel, 
+        private static IDynamicList CreateItem<TViewModel, TOptions>(TViewModel viewModel,
             AddNewDynamicItem parameters, Action<TOptions> options)
             where TViewModel : class
             where TOptions : DynamicListItem<TViewModel>, new()
@@ -291,7 +317,7 @@ namespace DynamicVML.Extensions
             return item;
         }
 
-        private static void CheckPostParametersAndThrow(AddNewDynamicItem parameters)
+        private static void CheckPostParametersAndThrow(AddNewDynamicItem parameters, Controller controller)
         {
             if (parameters.ContainerId == null)
             {
@@ -299,13 +325,35 @@ namespace DynamicVML.Extensions
                     "containerId. Have you forgotten to add the \"[FromBody]\" attribute to the 'AddNewDynamicItem' " +
                     "parameter in your [HttpPost] controller action?\"", nameof(parameters));
             }
+
+            if (controller.Request.Method != "POST")
+            {
+                throw new ApplicationException($"The item has been received via POST, but the action method is calling " +
+                    $"{nameof(PartialView)} instead of {nameof(PartialViewAsync)}. Please switch it to use {nameof(PartialViewAsync)}" +
+                    $"otherwise the item will not render correctly.");
+            }
         }
 
-        private static void CheckGetParametersAndThrow(AddNewDynamicItem parameters)
+        private static void CheckGetParametersAndThrow(AddNewDynamicItem parameters, Controller controller)
         {
             if (parameters.ContainerId == null)
             {
                 throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
+            }
+
+            if (controller.Request.Method != "GET")
+            {
+                throw new ApplicationException($"The item has been received via GET, but the action method is calling " +
+                    $"{nameof(PartialViewAsync)} instead of {nameof(PartialView)}. Please switch it to use {nameof(PartialView)}" +
+                    $"otherwise the item will not render correctly.");
+            }
+
+            if (parameters.AdditionalViewData != null && parameters.AdditionalViewData.Length > 0)
+            {
+                throw new ArgumentException($"The received item parameters contain additional view data, but the" +
+                    $"item has been received via GET or the controller action method is calling {nameof(PartialView)} instead " +
+                    $"of {nameof(PartialViewAsync)}. Please switch to POST and call {nameof(PartialViewAsync)} in your action " +
+                    $"method instead.", nameof(parameters));
             }
         }
     }
