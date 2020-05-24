@@ -276,25 +276,25 @@ namespace DynamicVML.Extensions
 
             CheckPostParametersAndThrow(parameters, controller);
 
-            try
+            ViewEngineResult viewResult = engine
+                .FindView(controller.ControllerContext, parameters.ListTemplate, false);
+
+            using (var writer = new StringWriter())
             {
-                ViewEngineResult viewResult = engine
-                    .FindView(controller.ControllerContext, parameters.ListTemplate, false);
+                ViewContext viewContext = new ViewContext(
+                    controller.ControllerContext,
+                    viewResult.View,
+                    controller.ViewData,
+                    controller.TempData,
+                    writer,
+                    new HtmlHelperOptions()
+                );
 
-                using (var writer = new StringWriter())
+                viewContext.ViewData.Model = item;
+                viewContext.ViewData.GetItemEditorParameters(item.Index, parameters, NewItemMethod.Post);
+
+                try
                 {
-                    ViewContext viewContext = new ViewContext(
-                        controller.ControllerContext,
-                        viewResult.View,
-                        controller.ViewData,
-                        controller.TempData,
-                        writer,
-                        new HtmlHelperOptions()
-                    );
-
-                    viewContext.ViewData.Model = item;
-                    viewContext.ViewData.GetItemEditorParameters(item.Index, parameters, NewItemMethod.Post);
-
                     await viewResult.View.RenderAsync(viewContext);
                     string html = writer.GetStringBuilder().ToString();
 
@@ -304,17 +304,17 @@ namespace DynamicVML.Extensions
                         html = html
                     });
                 }
-            }
-            catch
-            {
-                string error = $"Failed to render the dynamic list item. If you are using custom templates with " +
-                    $"options, make sure you have passed the options object when calling {nameof(PartialViewAsync)}.";
-
-                return controller.Json(new
+                catch (Exception ex) when (ex is InvalidOperationException || ex is DynamicListException)
                 {
-                    success = false,
-                    html = error
-                });
+                    string error = $"Failed to render the dynamic list item. If you are using custom templates with " +
+                        $"options, make sure you have passed the options object when calling {nameof(PartialViewAsync)}.";
+
+                    return controller.Json(new
+                    {
+                        success = false,
+                        html = error
+                    });
+                }
             }
         }
 

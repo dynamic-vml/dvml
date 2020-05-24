@@ -321,26 +321,33 @@ namespace Tests
 
             string url = e.GetActionInfo();
 
-            // Call the controller action manually
-            var parts = url.Split("|");
-            var response = await client.PostAsync(parts[1],
-                new StringContent(parts[2], Encoding.UTF8, "application/json"));
-
-            var jsonResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(), new
+            try
             {
-                success = true,
-                html = ""
-            });
+                // Call the controller action manually
+                var parts = url.Split("|");
+                var response = await client.PostAsync(parts[1],
+                    new StringContent(parts[2], Encoding.UTF8, "application/json"));
 
-            Assert.False(jsonResponse.success);
+                var jsonResponse = JsonConvert.DeserializeAnonymousType(await response.Content.ReadAsStringAsync(), new
+                {
+                    success = true,
+                    html = ""
+                });
 
-            var content = await Helpers.GetDocumentAsync(jsonResponse.html);
-            var actual = content.ToStandardizedHtml(minified: false);
+                Assert.False(jsonResponse.success);
 
-            // Assert
-            Assert.Contains("Failed to render the dynamic list item. If you are using custom " +
-                "templates with options, make sure you have passed the options object when " +
-                "calling PartialViewAsync.", actual);
+                var content = await Helpers.GetDocumentAsync(jsonResponse.html);
+                var actual = content.ToStandardizedHtml(minified: false);
+
+                // Assert
+                Assert.Contains("Failed to render the dynamic list item. If you are using custom " +
+                    "templates with options, make sure you have passed the options object when " +
+                    "calling PartialViewAsync.", actual);
+            }
+            catch (DynamicListException ex)
+            {
+                Assert.Contains("Error rendering item container template 'CustomItemTemplateWithWrongType'", ex.Message);
+            }
         }
 
         [Fact]
@@ -365,15 +372,22 @@ namespace Tests
 
             string url = e.GetActionInfo();
 
-            var response = await client.GetAsync(url);
-            var content = await Helpers.GetDocumentAsync(response);
-            var actual = content.ToStandardizedHtml(minified: false);
+            try
+            {
+                var response = await client.GetAsync(url);
+                var content = await Helpers.GetDocumentAsync(response);
+                var actual = content.ToStandardizedHtml(minified: false);
 
-            // Assert
-            Assert.Contains("DynamicVML.DynamicListException: Error rendering item container template 'CustomItemTemplateWithWrongType'" +
-                " for edit. Check the inner exception and other properties of this exception for details. Message: The model item passed" +
-                " into the ViewDataDictionary is of type 'Tests.ViewModels.TestOptions`1[Tests.BookViewModel]'," +
-                " but this ViewDataDictionary instance requires a model item of type 'Tests.ViewModels.IWrongOptions'.", actual);
+                // Assert
+                Assert.Contains("DynamicVML.DynamicListException: Error rendering item container template 'CustomItemTemplateWithWrongType'" +
+                    " for edit. Check the inner exception and other properties of this exception for details. Message: The model item passed" +
+                    " into the ViewDataDictionary is of type 'Tests.ViewModels.TestOptions`1[Tests.BookViewModel]'," +
+                    " but this ViewDataDictionary instance requires a model item of type 'Tests.ViewModels.IWrongOptions'.", actual);
+            }
+            catch (DynamicListException ex)
+            {
+                Assert.Contains("Error rendering item container template 'CustomItemTemplateWithWrongType'", ex.Message);
+            }
         }
     }
 }
