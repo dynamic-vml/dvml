@@ -1,6 +1,4 @@
-# Dynamic View-Model Lists
-
-[![Build status](https://ci.appveyor.com/api/projects/status/77ej7gsuxo10q5hn?svg=true)](https://ci.appveyor.com/project/cesarsouza/dvml) [![Nuget](https://img.shields.io/nuget/dt/DynamicVML?color=green&label=NuGet)](https://www.nuget.org/packages/DynamicVML/) ![MIT](https://img.shields.io/github/license/dynamic-vml/dvml)
+# Dynamic View-Model Lists <span align="right" float="right">[![Build status](https://ci.appveyor.com/api/projects/status/77ej7gsuxo10q5hn?svg=true)](https://ci.appveyor.com/project/cesarsouza/dvml) [![Nuget](https://img.shields.io/nuget/dt/DynamicVML?color=green&label=NuGet)](https://www.nuget.org/packages/DynamicVML/) ![MIT](https://img.shields.io/github/license/dynamic-vml/dvml) </span>
 
 <pre>
 PM> dotnet add package <b>DynamicVML</b>
