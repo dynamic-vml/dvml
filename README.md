@@ -1,6 +1,10 @@
 # Dynamic View-Model Lists
 
-[![Build status](https://ci.appveyor.com/api/projects/status/77ej7gsuxo10q5hn?svg=true)](https://ci.appveyor.com/project/cesarsouza/dvml)
+[![Build status](https://ci.appveyor.com/api/projects/status/77ej7gsuxo10q5hn?svg=true)](https://ci.appveyor.com/project/cesarsouza/dvml) [![Nuget](https://img.shields.io/nuget/dt/DynamicVML?color=green&label=NuGet)](https://www.nuget.org/packages/DynamicVML/) ![MIT](https://img.shields.io/github/license/dynamic-vml/dvml)
+
+<pre>
+PM> dotnet add package <b>DynamicVML</b>
+</pre>
 
 The *Dynamic View Model Lists* library provides a templating engine to render dynamic item lists in ASP.NET. 
 A dynamic list is a list inside an HTML form where the user can add new items to a list after the page 
