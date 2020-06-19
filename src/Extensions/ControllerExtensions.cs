@@ -340,7 +340,7 @@ namespace DynamicVML.Extensions
                     "parameter in your [HttpPost] controller action?\"", nameof(parameters));
             }
 
-            if (controller.Request.Method != "POST")
+            if (controller.Request != null && controller.Request.Method != "POST")
             {
                 throw new DynamicListException($"The item has been received via GET, but the action method is calling " +
                     $"{nameof(PartialViewAsync)} instead of {nameof(PartialView)}. Please switch it to use {nameof(PartialView)}" +
@@ -358,7 +358,7 @@ namespace DynamicVML.Extensions
                 throw new ArgumentException("The received new item parameters did not contain a valid containerId.", nameof(parameters));
             }
 
-            if (controller.Request.Method != "GET")
+            if (controller.Request != null && controller.Request.Method != "GET")
             {
                 throw new DynamicListException($"The item has been received via POST, but the action method is calling " +
                     $"{nameof(PartialView)} instead of {nameof(PartialViewAsync)}. Please switch it to use {nameof(PartialViewAsync)}" +
