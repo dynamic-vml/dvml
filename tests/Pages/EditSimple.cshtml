@@ -1,0 +1,15 @@
+﻿@page "{handler?}"
+@model Tests.Pages.EditSimpleModel
+@using DynamicVML.Extensions
+@{
+    Layout = "_Layout";
+}
+
+<div>
+    @Html.DisplayNameFor(model => model.Input.ParentProperty)
+    @Html.EditorFor(model => model.Input.ParentProperty)
+    @Html.ListEditorFor(model => model.Input.Items)
+</div>
+
+
+

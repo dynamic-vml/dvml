@@ -1,0 +1,15 @@
+﻿@page "{handler?}"
+@model Tests.Pages.GetSimpleModel
+@using DynamicVML.Extensions
+@{
+    Layout = "_Layout";
+}
+
+<div>
+    @Html.DisplayNameFor(model => model.Input.ParentProperty)
+    @Html.DisplayFor(model => model.Input.ParentProperty)
+    @Html.DisplayListFor(model => model.Input.Items)
+</div>
+
+
+

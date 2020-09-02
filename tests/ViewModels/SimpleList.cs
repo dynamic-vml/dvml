@@ -10,6 +10,10 @@ namespace Tests
 
         public virtual DynamicList<SimpleItem> Items { get; set; } = new DynamicList<SimpleItem>("I");
 
+        public SimpleList()
+        {
+
+        }
 
         public SimpleList(int children)
         {

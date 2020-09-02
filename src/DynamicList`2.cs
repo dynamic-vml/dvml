@@ -106,7 +106,7 @@ namespace DynamicVML
         /// 
         /// <value>The keys, represented as an <see cref="IEnumerable{String}"/>.</value>
         /// 
-        public IEnumerable<string> Keys => Dictionary.Keys;
+        public virtual IEnumerable<string> Keys => Dictionary.Keys;
 
         /// <summary>
         ///   Gets an enumerable that can be used to iterate through your ViewModel objects
@@ -115,7 +115,7 @@ namespace DynamicVML
         /// 
         /// <value>The view models, represented as an <see cref="IEnumerable{TViewModel}"/>.</value>
         /// 
-        public IEnumerable<TViewModel> ViewModels => Dictionary.Values
+        public virtual IEnumerable<TViewModel> ViewModels => Dictionary.Values
                     .Where(x => x.ViewModel != null)
                     .Select(x => x.ViewModel!);
 
@@ -128,7 +128,7 @@ namespace DynamicVML
         /// 
         /// <value>The view models, represented as an <see cref="IEnumerable{TViewModel}"/>.</value>
         /// 
-        public IEnumerable<TOptions> Options => Dictionary.Values;
+        public virtual IEnumerable<TOptions> Options => Dictionary.Values;
 
         /// <summary>
         ///   The HTML div ID associated with this list. This ID is generated
@@ -180,7 +180,7 @@ namespace DynamicVML
         ///     plus any additional options associated to it.
         /// </returns>
         /// 
-        public TOptions this[string id]
+        public virtual TOptions this[string id]
         {
             get { return Dictionary[id]; }
         }
@@ -193,7 +193,7 @@ namespace DynamicVML
         /// 
         /// <param name="options">The elements to be added to this list.</param>
         /// 
-        public void AddRange(IEnumerable<TOptions> options)
+        public virtual void AddRange(IEnumerable<TOptions> options)
         {
             foreach (var v in options)
                 this.Add(v);
@@ -211,7 +211,7 @@ namespace DynamicVML
         ///     options associated with each of your view models. This is optional.
         /// </param>
         /// 
-        public void AddRange(IEnumerable<TViewModel> viewModels, Func<TViewModel, TOptions>? options = null)
+        public virtual void AddRange(IEnumerable<TViewModel> viewModels, Func<TViewModel, TOptions>? options = null)
         {
             if (options == null)
             {
@@ -246,7 +246,7 @@ namespace DynamicVML
         /// 
         /// <param name="options">The options object to be added to this list.</param>
         /// 
-        public void Add(TOptions options)
+        public virtual void Add(TOptions options)
         {
             if (options.ViewModel == null)
             {
@@ -285,7 +285,7 @@ namespace DynamicVML
         /// 
         /// <param name="viewModel">The view model object to be added to this list.</param>
         /// 
-        public TOptions Add(TViewModel viewModel)
+        public virtual TOptions Add(TViewModel viewModel)
         {
             var options = new TOptions()
             {
@@ -306,7 +306,7 @@ namespace DynamicVML
         ///     object that will be used to wrap the <paramref name="viewModel"/> before it gets added
         ///     to the list. This can be used to specify custom IDs for list items.</param>
         /// 
-        public TOptions Add(TViewModel viewModel, Action<TOptions> options)
+        public virtual TOptions Add(TViewModel viewModel, Action<TOptions> options)
         {
             var opt = new TOptions()
             {
@@ -323,7 +323,7 @@ namespace DynamicVML
         ///   Removes all items from this list.
         /// </summary>
         /// 
-        public void Clear()
+        public virtual void Clear()
         {
             Dictionary.Clear();
         }
@@ -342,7 +342,7 @@ namespace DynamicVML
         ///   in the list; otherwise, <see langword="false" />.
         /// </returns>
         /// 
-        public bool Contains(TOptions item)
+        public virtual bool Contains(TOptions item)
         {
             if (item.Index == null)
                 return false;
@@ -357,7 +357,7 @@ namespace DynamicVML
         /// <param name="array">The one-dimensional <see cref="T:System.Array" /> that is the destination of the elements copied from <see cref="T:System.Collections.Generic.ICollection`1" />. The <see cref="T:System.Array" /> must have zero-based indexing.</param>
         /// <param name="arrayIndex">The zero-based index in <paramref name="array" /> at which copying begins.</param>
         /// 
-        public void CopyTo(TOptions[] array, int arrayIndex)
+        public virtual void CopyTo(TOptions[] array, int arrayIndex)
         {
             this.Options.ToArray().CopyTo(array, arrayIndex);
         }
@@ -376,7 +376,7 @@ namespace DynamicVML
         ///   the original <see cref="T:System.Collections.Generic.ICollection`1" />.
         /// </returns>
         /// 
-        public bool Remove(TOptions item)
+        public virtual bool Remove(TOptions item)
         {
             if (item.Index == null)
                 return false;
@@ -389,7 +389,7 @@ namespace DynamicVML
         /// 
         /// <returns>An enumerator that can be used to iterate through the collection.</returns>
         /// 
-        public IEnumerator<TOptions> GetEnumerator()
+        public virtual IEnumerator<TOptions> GetEnumerator()
         {
             return this.Dictionary.Values.GetEnumerator();
         }
@@ -424,7 +424,7 @@ namespace DynamicVML
         ///     list/collection or just iterated over (e.g. using <see cref="System.Linq"/>.
         /// </returns>
         /// 
-        public IEnumerable<TModel> ToModel<TModel>(Func<TViewModel, TModel> func)
+        public virtual IEnumerable<TModel> ToModel<TModel>(Func<TViewModel, TModel> func)
         {
             return ViewModels.Select(func);
         }
@@ -448,7 +448,7 @@ namespace DynamicVML
         ///     list/collection or just iterated over (e.g. using <see cref="System.Linq"/>.
         /// </returns>
         /// 
-        public IEnumerable<TModel> ToModel<TModel>(Func<TOptions, TModel> func)
+        public virtual IEnumerable<TModel> ToModel<TModel>(Func<TOptions, TModel> func)
         {
             return Options.Select(func);
         }

@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Tests
+namespace Tests.MVC
 {
     public class AddNewItemTests : IClassFixture<WebApplicationFactory<Startup>>
     {
@@ -146,15 +146,17 @@ namespace Tests
             string after = document.ToStandardizedHtml();
 
             // Assert
-            string beforePath = Helpers.GetResourcePath(@"AddNewItem\simple-before.html");
-            string afterPath = Helpers.GetResourcePath(@"AddNewItem\simple-after.html");
+            string beforePath = Helpers.GetResourcePath(@"AddNewItem\mvc-simple-before.html");
+            string afterPath = Helpers.GetResourcePath(@"AddNewItem\mvc-simple-after.html");
 
-            string expectedBefore = beforePath.ToHtml();
-            string expectedAfter = afterPath.ToHtml();
 #if SAVE
             after.ToFile(afterPath);
             before.ToFile(beforePath);
 #endif
+
+            string expectedBefore = beforePath.ToHtml();
+            string expectedAfter = afterPath.ToHtml();
+
             Assert.Equal(expectedBefore, before);
             Assert.Equal(expectedAfter, after);
         }
@@ -221,15 +223,17 @@ namespace Tests
             string after = document.ToStandardizedHtml();
 
             // Assert
-            string beforePath = Helpers.GetResourcePath(@"AddNewItem\simple-post-before.html");
-            string afterPath = Helpers.GetResourcePath(@"AddNewItem\simple-post-after.html");
-            
-            string expectedBefore = beforePath.ToHtml();
-            string expectedAfter = afterPath.ToHtml();
+            string beforePath = Helpers.GetResourcePath(@"AddNewItem\mvc-simple-post-before.html");
+            string afterPath = Helpers.GetResourcePath(@"AddNewItem\mvc-simple-post-after.html");
+
 #if SAVE
             after.ToFile(afterPath);
             before.ToFile(beforePath);
 #endif
+            
+            string expectedBefore = beforePath.ToHtml();
+            string expectedAfter = afterPath.ToHtml();
+
             Assert.Equal(expectedBefore, before);
             Assert.Equal(expectedAfter, after);
         }

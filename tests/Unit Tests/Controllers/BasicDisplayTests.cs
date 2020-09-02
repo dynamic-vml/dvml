@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 using Xunit;
 
-namespace Tests
+namespace Tests.MVC
 {
     public class BasicDisplayTests : IClassFixture<WebApplicationFactory<Startup>>
     {
@@ -27,8 +27,7 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/GetSimple";
-            string path = Helpers.GetResourcePath(@"Display\simple.html");
-            string expected = path.ToHtml();
+            string path = Helpers.GetResourcePath(@"Display\mvc-simple.html");
 
             // Test
             var response = await client.GetAsync(url);
@@ -37,6 +36,8 @@ namespace Tests
 #if SAVE
             actual.ToFile(path);
 #endif
+            
+            string expected = path.ToHtml();
 
             // Assert
             Assert.Equal(expected, actual);
@@ -47,8 +48,7 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/GetNested";
-            string path = Helpers.GetResourcePath(@"Display\nested.html");
-            string expected = path.ToHtml();
+            string path = Helpers.GetResourcePath(@"Display\mvc-nested.html");
 
             // Test
             var response = await client.GetAsync(url);
@@ -57,6 +57,7 @@ namespace Tests
 #if SAVE
             actual.ToFile(path);
 #endif
+            string expected = path.ToHtml();
 
             // Assert
             Assert.Equal(expected, actual);
@@ -67,8 +68,7 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/GetNestedRecursive";
-            string path = Helpers.GetResourcePath(@"Display\recursive.html");
-            string expected = path.ToHtml();
+            string path = Helpers.GetResourcePath(@"Display\mvc-recursive.html");
 
             // Test
             var response = await client.GetAsync(url);
@@ -77,6 +77,7 @@ namespace Tests
 #if SAVE
             actual.ToFile(path);
 #endif
+            string expected = path.ToHtml();
 
             // Assert
             Assert.Equal(expected, actual);

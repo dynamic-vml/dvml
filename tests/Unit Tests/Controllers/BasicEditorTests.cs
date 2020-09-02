@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 using Xunit;
 
-namespace Tests
+namespace Tests.MVC
 {
     public class BasicEditorTests : IClassFixture<WebApplicationFactory<Startup>>
     {
@@ -27,8 +27,7 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/EditSimple";
-            string path = Helpers.GetResourcePath(@"Editor\simple.html");
-            string expected = path.ToHtml();
+            string path = Helpers.GetResourcePath(@"Editor\mvc-simple.html");
 
             // Test
             var response = await client.GetAsync(url);
@@ -37,6 +36,7 @@ namespace Tests
 #if SAVE
             actual.ToFile(path);
 #endif
+            string expected = path.ToHtml();
 
             // Assert
             Assert.Equal(expected, actual);
@@ -47,8 +47,7 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/EditNested";
-            string path = Helpers.GetResourcePath(@"Editor\nested.html");
-            string expected = path.ToHtml();
+            string path = Helpers.GetResourcePath(@"Editor\mvc-nested.html");
 
             // Test
             var response = await client.GetAsync(url);
@@ -57,6 +56,7 @@ namespace Tests
 #if SAVE
             actual.ToFile(path);
 #endif
+            string expected = path.ToHtml();
 
             // Assert
             Assert.Equal(expected, actual);
@@ -67,8 +67,7 @@ namespace Tests
         {
             // Arrange
             string url = "/Home/EditNestedRecursive";
-            string path = Helpers.GetResourcePath(@"Editor\recursive.html");
-            string expected = path.ToHtml();
+            string path = Helpers.GetResourcePath(@"Editor\mvc-recursive.html");
 
             // Test
             var response = await client.GetAsync(url);
@@ -77,6 +76,7 @@ namespace Tests
 #if SAVE
             actual.ToFile(path);
 #endif
+            string expected = path.ToHtml();
 
             // Assert
             Assert.Equal(expected, actual);

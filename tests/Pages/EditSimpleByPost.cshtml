@@ -1,0 +1,21 @@
+﻿@page "{handler?}"
+@model Tests.Pages.EditSimpleByPostModel
+@using DynamicVML.Extensions
+@{
+    Layout = "_Layout";
+}
+
+<div>
+    @Html.DisplayNameFor(model => model.Input.ParentProperty)
+    @Html.EditorFor(model => model.Input.ParentProperty)
+    @Html.ListEditorFor(model => model.Input.Items,
+        method: DynamicVML.NewItemMethod.Post,
+        actionUrl: "AddSimpleItemByPost",
+        additionalViewData: new
+        {
+            Data = "myData"
+        })
+</div>
+
+
+

@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 using Xunit;
 
-namespace Tests
+namespace Tests.MVC
 {
     public class ControllerTests : IClassFixture<WebApplicationFactory<Startup>>
     {

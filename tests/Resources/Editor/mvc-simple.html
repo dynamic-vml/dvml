@@ -1,0 +1,61 @@
+<html>
+  <head></head>
+  <body>
+    <div>
+      ParentProperty
+      <input class="text-box single-line" id="ParentProperty" name="ParentProperty" type="text">
+      <input type="hidden" data-val="true" data-val-required="The ContainerId field is required." id="Items_ContainerId" name="Items.ContainerId" value="I">
+      <div class="col-12" name="dynamic-list-container" id="list-container-I">
+        <div class="row">
+          <div class="col-12 p-0">
+            <div id="I" name="dynamic-list">
+              <div id="R0" name="dynamic-list-item">
+                <input type="hidden" id="Items_Index" name="Items.Index" value="R0">
+                <input type="hidden" id="Items_ContainerId" name="Items.ContainerId" value="I">
+                <input type="hidden" id="Items_R0__Index" name="Items[R0].Index" value="R0">
+                <div>
+                  ItemProperty
+                  <input class="text-box single-line" id="Items_R0__ViewModel_ItemProperty" name="Items[R0].ViewModel.ItemProperty" type="text" value="P0">
+                </div>
+              </div>
+              <div id="R1" name="dynamic-list-item">
+                <input type="hidden" id="Items_Index" name="Items.Index" value="R1">
+                <input type="hidden" id="Items_ContainerId" name="Items.ContainerId" value="I">
+                <input type="hidden" id="Items_R1__Index" name="Items[R1].Index" value="R1">
+                <div>
+                  ItemProperty
+                  <input class="text-box single-line" id="Items_R1__ViewModel_ItemProperty" name="Items[R1].ViewModel.ItemProperty" type="text" value="P1">
+                </div>
+              </div>
+              <div id="R2" name="dynamic-list-item">
+                <input type="hidden" id="Items_Index" name="Items.Index" value="R2">
+                <input type="hidden" id="Items_ContainerId" name="Items.ContainerId" value="I">
+                <input type="hidden" id="Items_R2__Index" name="Items[R2].Index" value="R2">
+                <div>
+                  ItemProperty
+                  <input class="text-box single-line" id="Items_R2__ViewModel_ItemProperty" name="Items[R2].ViewModel.ItemProperty" type="text" value="P2">
+                </div>
+              </div>
+              <div id="R3" name="dynamic-list-item">
+                <input type="hidden" id="Items_Index" name="Items.Index" value="R3">
+                <input type="hidden" id="Items_ContainerId" name="Items.ContainerId" value="I">
+                <input type="hidden" id="Items_R3__Index" name="Items[R3].Index" value="R3">
+                <div>
+                  ItemProperty
+                  <input class="text-box single-line" id="Items_R3__ViewModel_ItemProperty" name="Items[R3].ViewModel.ItemProperty" type="text" value="P3">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mr-1 text-right" name="dynamic-list-footer">
+          <div class="col-12 mt-0 text-right">
+            <a href="javascript:void(0);" name="dynamic-list-addnewitem" onclick="dvml.add('I', 'AddSimpleItem/?ContainerId=I&amp;ListTemplate=EditorTemplates%2fDynamicList&amp;ItemContainerTemplate=DynamicItemContainer&amp;ItemTemplate=SimpleItem&amp;Prefix=Items&amp;Mode=0');">
+              Add new SimpleItem
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
