@@ -186,15 +186,15 @@ namespace Tests.RazorPages
             bool cache = optionsObj.Get("cache").AsBoolean();
             ScriptFunctionInstance success = optionsObj.Get("success").As<ScriptFunctionInstance>();
 
-            //Assert.Equal("AddSimpleItemByPost", url);
-            //Assert.Equal("{\"ContainerId\":\"I\"," +
-            //    "\"ItemTemplate\":\"SimpleItem\"," +
-            //    "\"ItemContainerTemplate\":\"DynamicItemContainer\"," +
-            //    "\"ListTemplate\":\"EditorTemplates/DynamicList\"," +
-            //    "\"Prefix\":\"Input.Items\"," +
-            //    "\"Mode\":0,\"" +
-            //    "AdditionalViewData\":\"eyJEYXRhIjoibXlEYXRhIn0=\"}", 
-            //    data);
+            Assert.Equal("AddSimpleItemByPost", url);
+            Assert.Equal("{\"ContainerId\":\"I\"," +
+                "\"ItemTemplate\":\"SimpleItem\"," +
+                "\"ItemContainerTemplate\":\"DynamicItemContainer\"," +
+                "\"ListTemplate\":\"EditorTemplates/DynamicList\"," +
+                "\"Prefix\":\"Input.Items\"," +
+                "\"Mode\":0,\"" +
+                "AdditionalViewData\":\"eyJEYXRhIjoibXlEYXRhIn0=\"}",
+                data);
             Assert.Equal("application/json; charset=utf-8", contentType);
             Assert.Equal("POST", type);
             Assert.False(cache);
