@@ -50,7 +50,7 @@ namespace DynamicVML
     /// <seealso cref="DynamicVML.IDynamicList{TOptions}" />
     /// <seealso cref="DynamicVML.IDynamicList" />
     /// 
-    public class DynamicList<TViewModel, TOptions> : ICollection<TOptions>, IDynamicList<TOptions>, IDynamicList
+    public class DynamicList<TViewModel, TOptions> : ICollection<TOptions>, IDynamicList<TOptions>, IDynamicViewModelCollection<TViewModel>
         where TViewModel : class
         where TOptions : DynamicListItem<TViewModel>, new()
     {

@@ -2,6 +2,7 @@
 // Copyright (c) 2020 César Roberto de Souza. Licensed under the MIT license
 // cesarsouza@gmail.com - http://crsouza.com
 
+using System.Collections;
 using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -22,7 +23,7 @@ namespace DynamicVML
     /// 
     /// <seealso cref="IDynamicListItem{TViewModel}"/>
     /// 
-    public interface IDynamicList
+    public interface IDynamicList : IEnumerable
     {
         /// <summary>
         ///   Gets the number of elements contained in this list.
@@ -90,7 +91,7 @@ namespace DynamicVML
     /// 
     /// <seealso cref="IDynamicListItem"/>
     /// 
-    public interface IDynamicList<out TValue> : IDynamicList
+    public interface IDynamicList<out TValue> : IDynamicList, IEnumerable<TValue>
         where TValue : IDynamicListItem
     {
 
