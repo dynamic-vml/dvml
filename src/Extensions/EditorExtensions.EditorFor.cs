@@ -190,7 +190,7 @@ namespace DynamicVML.Extensions
         {
             ItemEditorParameters param = html.ViewData.GetItemEditorParameters(html.ViewData.Model.Index);
 
-            string templateName = String.Empty;
+            string templateName = string.Empty;
 
             try
             {
