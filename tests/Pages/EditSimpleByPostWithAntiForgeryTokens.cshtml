@@ -1,0 +1,24 @@
+﻿@page "{handler?}"
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model Tests.Pages.EditSimpleByPostWithAntiForgeryTokensModel
+@using DynamicVML.Extensions
+@{
+    Layout = "_Layout";
+}
+
+<form method="post">
+    <div>
+        @Html.DisplayNameFor(model => model.Input.ParentProperty)
+        @Html.EditorFor(model => model.Input.ParentProperty)
+        @Html.ListEditorFor(model => model.Input.Items,
+            method: DynamicVML.NewItemMethod.Post,
+            actionUrl: "?handler=AddSimpleItemByPost",
+            additionalViewData: new
+            {
+                Data = "myData"
+            })
+    </div>
+</form>
+
+
+

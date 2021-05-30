@@ -13,18 +13,34 @@
     }
 
     function add(containerId, actionUrl) {
-        var container = $('#' + containerId);
-        var requestOptions = null;
+        let container = $('#' + containerId);
+        let requestOptions = null;
 
         if (actionUrl.startsWith("POST")) {
             // We will make an ajax request via POST
-            var actionSettings = actionUrl.split("|");
+            let actionSettings = actionUrl.split("|");
+
+            let url = actionSettings[1];
+            let data = actionSettings[2];
+            let headers = null;
+            let traditional = false;
+
+            // Check if the page has an antiforgery token field
+            let antiforgeryTokenField = $('input[name="__RequestVerificationToken"]');
+            if (antiforgeryTokenField) {
+                traditional = true;
+                headers = {
+                    RequestVerificationToken: antiforgeryTokenField.val(),
+                };
+            }
 
             requestOptions = {
-                url: actionSettings[1],
-                data: actionSettings[2],
+                url: url,
+                headers: headers,
+                data: data,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
+                traditional: traditional,
                 type: "POST",
                 cache: false,
                 success: function (response) {
