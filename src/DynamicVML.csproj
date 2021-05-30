@@ -26,7 +26,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageIcon>dvml.png</PackageIcon>
     <AssemblyName>DynamicVML</AssemblyName>
-    <Version>1.5.0</Version>
+    <Version>1.5.1</Version>
 
     <!-- Razor <-> MVC options -->
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
